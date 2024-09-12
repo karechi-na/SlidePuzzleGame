@@ -5,22 +5,20 @@ using UnityEngine;
 public class BlockGenerator : MonoBehaviour
 {
     [SerializeField] private GameObject SquareNo2;
+    private BlockController controller;
+    private GameDirector gameDirector;
 
 
-    // Start is called before the first frame update
-    void Start()
+    private void SquareGenerator()
     {
+        if (controller.isTransform)
+        {
+            GameObject square = Instantiate(SquareNo2);
+            float coordinateX = Random.Range(-3, 4);
+            float coordinateY = Random.Range(-3, 4);
+            square.transform.position = new Vector3(coordinateX, coordinateY, 0);
+            //controller.isTransform = false;
+        }
         
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
-    public void SquareGenerator()
-    {
-        Instantiate(SquareNo2);
     }
 }
