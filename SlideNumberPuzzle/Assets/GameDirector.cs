@@ -79,6 +79,7 @@ public class GameDirector : MonoBehaviour
             //マウスの移動した方向にブロックを動かす。
             if (yPosi < xPosi && endPos.x - this.startPos.x < 0)
             {
+                //MoveLeft();
             }
             else if (yPosi < xPosi && endPos.x - this.startPos.x > 0)
             {
@@ -86,9 +87,11 @@ public class GameDirector : MonoBehaviour
             }
             else if (xPosi < yPosi && endPos.y - this.startPos.y < 0)
             {
+                //MoveDown();
             }
             else if (xPosi < yPosi && endPos.y - this.startPos.y > 0)
             {
+               // MoveUp();
             }
         }
     }
@@ -110,6 +113,72 @@ public class GameDirector : MonoBehaviour
                 if (bc.gridPosition.x < 3 - count)
                 {
                     bc.transformRight((int)((3 - count) - bc.gridPosition.x));
+                }
+            }
+        }
+    }
+
+    private void MoveLeft()
+    {
+        foreach (BlockController bc in blockControllerList)
+        {
+            if (bc.gridPosition.x >= 0)
+            {
+                int count = 0;
+                foreach (BlockController checkBc in blockControllerList)
+                {
+                    if (bc.gridPosition.y == checkBc.gridPosition.y && bc.gridPosition.x > checkBc.gridPosition.x)
+                    {
+                        count++;
+                    }
+                }
+                if (bc.gridPosition.x < 3 - count)
+                {
+                    bc.transformLeft((int)((3 - count) - bc.gridPosition.x));
+                }
+            }
+        }
+    }
+
+    private void MoveDown()
+    {
+        foreach (BlockController bc in blockControllerList)
+        {
+            if (bc.gridPosition.y >= 0 && bc.gridPosition.y < 3)
+            {
+                int count = 0;
+                foreach (BlockController checkBc in blockControllerList)
+                {
+                    if (bc.gridPosition.x == checkBc.gridPosition.x && bc.gridPosition.y > checkBc.gridPosition.y)
+                    {
+                        count++;
+                    }
+                }
+                if (bc.gridPosition.y < 3 - count)
+                {
+                    bc.transformDown((int)((3 - count) - bc.gridPosition.y));
+                }
+            }
+        }
+    }
+
+    private void MoveUp()
+    {
+        foreach (BlockController bc in blockControllerList)
+        {
+            if (bc.gridPosition.y >= 0 && bc.gridPosition.y < 3)
+            {
+                int count = 0;
+                foreach (BlockController checkBc in blockControllerList)
+                {
+                    if (bc.gridPosition.x == checkBc.gridPosition.x && bc.gridPosition.y < checkBc.gridPosition.y)
+                    {
+                        count++;
+                    }
+                }
+                if (bc.gridPosition.y < 3 - count)
+                {
+                    bc.transformDown((int)((3 - count) - bc.gridPosition.y));
                 }
             }
         }

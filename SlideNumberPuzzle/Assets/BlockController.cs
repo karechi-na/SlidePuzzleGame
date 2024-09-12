@@ -76,12 +76,9 @@ public class BlockController : MonoBehaviour
 
 
     //ç∂Ç…à⁄ìÆ
-    public float transformLeft(float leftPosi, float posY)
+    public void transformLeft(int moveGridCount)
     {
-        leftPosi = leftPosi * -1;
-        this.transform.DOMove(new Vector3(1, posY, 0), 0.5f);
-
-        return leftPosi;
+        this.transform.DOMove(new Vector3(transform.position.x - (2.0f * moveGridCount), transform.position.y, 0), 0.5f) ;
     }
 
     //âEÇ…à⁄ìÆ
@@ -91,19 +88,14 @@ public class BlockController : MonoBehaviour
     }
 
     //â∫Ç…à⁄ìÆ
-    public float transformDown(float downPosi, float posX)
+    public void transformDown(int moveGridCount)
     {
-        downPosi = downPosi * -1;
-        this.transform.DOMove(new Vector3(posX, downPosi, 0), 0.5f);
-
-        return downPosi;
+        this.transform.DOMove(new Vector3(transform.position.y - (2.0f * moveGridCount), transform.position.x, 0), 0.5f);
     }
 
     //è„Ç…à⁄ìÆ
-    public float transformUp(float upPosi, float posX)
+    public void transformUp(int moveGridCount)
     {
-        this.transform.DOMove(new Vector3(posX, -1, 0), 0.5f);
-
-        return upPosi;
+        this.transform.DOMove(new Vector3(transform.position.y + (2.0f * moveGridCount), transform.position.x, 0), 0.5f);
     }
 }
