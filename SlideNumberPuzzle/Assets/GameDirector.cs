@@ -79,7 +79,7 @@ public class GameDirector : MonoBehaviour
             //マウスの移動した方向にブロックを動かす。
             if (yPosi < xPosi && endPos.x - this.startPos.x < 0)
             {
-                //MoveLeft();
+                MoveLeft();
             }
             else if (yPosi < xPosi && endPos.x - this.startPos.x > 0)
             {
@@ -87,11 +87,11 @@ public class GameDirector : MonoBehaviour
             }
             else if (xPosi < yPosi && endPos.y - this.startPos.y < 0)
             {
-                //MoveDown();
+                MoveDown();
             }
             else if (xPosi < yPosi && endPos.y - this.startPos.y > 0)
             {
-               // MoveUp();
+               MoveUp();
             }
         }
     }
@@ -110,9 +110,11 @@ public class GameDirector : MonoBehaviour
                         count++;
                     }
                 }
+
                 if (bc.gridPosition.x < 3 - count)
                 {
                     bc.transformRight((int)((3 - count) - bc.gridPosition.x));
+                    bc.gridPosition.x = 3 - count;
                 }
             }
         }
@@ -122,7 +124,7 @@ public class GameDirector : MonoBehaviour
     {
         foreach (BlockController bc in blockControllerList)
         {
-            if (bc.gridPosition.x >= 0)
+            if (bc.gridPosition.x > 0)
             {
                 int count = 0;
                 foreach (BlockController checkBc in blockControllerList)
@@ -132,9 +134,10 @@ public class GameDirector : MonoBehaviour
                         count++;
                     }
                 }
-                if (bc.gridPosition.x < 3 - count)
+                if (bc.gridPosition.x > count)
                 {
-                    bc.transformLeft((int)((3 - count) - bc.gridPosition.x));
+                    bc.transformLeft((int) bc.gridPosition.x - count);
+                    bc.gridPosition.x = count;
                 }
             }
         }
@@ -144,29 +147,7 @@ public class GameDirector : MonoBehaviour
     {
         foreach (BlockController bc in blockControllerList)
         {
-            if (bc.gridPosition.y >= 0 && bc.gridPosition.y < 3)
-            {
-                int count = 0;
-                foreach (BlockController checkBc in blockControllerList)
-                {
-                    if (bc.gridPosition.x == checkBc.gridPosition.x && bc.gridPosition.y > checkBc.gridPosition.y)
-                    {
-                        count++;
-                    }
-                }
-                if (bc.gridPosition.y < 3 - count)
-                {
-                    bc.transformDown((int)((3 - count) - bc.gridPosition.y));
-                }
-            }
-        }
-    }
-
-    private void MoveUp()
-    {
-        foreach (BlockController bc in blockControllerList)
-        {
-            if (bc.gridPosition.y >= 0 && bc.gridPosition.y < 3)
+            if (bc.gridPosition.y < 3)
             {
                 int count = 0;
                 foreach (BlockController checkBc in blockControllerList)
@@ -179,6 +160,30 @@ public class GameDirector : MonoBehaviour
                 if (bc.gridPosition.y < 3 - count)
                 {
                     bc.transformDown((int)((3 - count) - bc.gridPosition.y));
+                    bc.gridPosition.y = 3 - count;
+                }
+            }
+        }
+    }
+
+    private void MoveUp()
+    {
+        foreach (BlockController bc in blockControllerList)
+        {
+            if (bc.gridPosition.y > 0)
+            {
+                int count = 0;
+                foreach (BlockController checkBc in blockControllerList)
+                {
+                    if (bc.gridPosition.x == checkBc.gridPosition.x && bc.gridPosition.y > checkBc.gridPosition.y)
+                    {
+                        count++;
+                    }
+                }
+                if (bc.gridPosition.y > count)
+                {
+                    bc.transformUp((int)bc.gridPosition.y - count);
+                    bc.gridPosition.y = count;
                 }
             }
         }

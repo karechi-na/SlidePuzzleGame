@@ -9,11 +9,11 @@ public class BlockController : MonoBehaviour
     private Vector2 startPos;
     public bool isTransform = false;
     private GameDirector gameDirector;
-    public Vector2 gridPosition =Vector2.zero;
+    public Vector2 gridPosition = Vector2.zero;
 
     void Start()
     {
-        
+
     }
 
 
@@ -78,24 +78,24 @@ public class BlockController : MonoBehaviour
     //ç∂Ç…à⁄ìÆ
     public void transformLeft(int moveGridCount)
     {
-        this.transform.DOMove(new Vector3(transform.position.x - (2.0f * moveGridCount), transform.position.y, 0), 0.5f) ;
+        this.transform.DOMove(new Vector3(transform.position.x - (2.0f * moveGridCount), transform.position.y, 0), 0.5f);
     }
 
     //âEÇ…à⁄ìÆ
     public void transformRight(int moveGridCount)
     {
-        this.transform.DOMove(new Vector3(transform.position.x + (2.0f* moveGridCount), transform.position.y, 0), 0.5f);
+        this.transform.DOMove(new Vector3(transform.position.x + (2.0f * moveGridCount), transform.position.y, 0), 0.5f);
     }
 
     //â∫Ç…à⁄ìÆ
     public void transformDown(int moveGridCount)
     {
-        this.transform.DOMove(new Vector3(transform.position.y - (2.0f * moveGridCount), transform.position.x, 0), 0.5f);
+        this.transform.DOMove(new Vector3(transform.position.x, transform.position.y - (2.0f * moveGridCount), 0), 0.5f);
     }
 
     //è„Ç…à⁄ìÆ
     public void transformUp(int moveGridCount)
     {
-        this.transform.DOMove(new Vector3(transform.position.y + (2.0f * moveGridCount), transform.position.x, 0), 0.5f);
+        this.transform.DOMove(new Vector3(transform.position.x, transform.position.y + (2.0f * moveGridCount), 0), 0.5f);
     }
 }
