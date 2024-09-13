@@ -1,11 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+//using UnityEngine.UI;
 
 public class GameDirector : MonoBehaviour
 {
     [SerializeField] private GameObject SquareNo2;
-    private BlockGenerator generator;
+    //private BlockController blockUnion;
+    //private BlockGenerator generator;
     private int keepX = 0;
     private int keepY = 0;
     private int count = 0;
@@ -50,7 +52,7 @@ public class GameDirector : MonoBehaviour
             }
         }
 
-
+        
     }
 
     private void Update()
