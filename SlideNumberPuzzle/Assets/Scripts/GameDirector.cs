@@ -13,10 +13,6 @@ public class GameDirector : MonoBehaviour
     public int yCoordinate = 0;
     private Vector2 startPos;
     private List<BlockController> blockControllerList = new List<BlockController>();
-    //public bool[,] array2D = new bool[4, 4] { { false, false, false, false},
-    //                                          { false, false, false, false},
-    //                                          { false, false, false, false},
-    //                                          { false, false, false, false} };
 
     // Start is called before the first frame update
     void Start()
@@ -96,6 +92,9 @@ public class GameDirector : MonoBehaviour
         }
     }
 
+
+
+    //右に移動させるメソッド
     private void MoveRight()
     {
         foreach (BlockController bc in blockControllerList)
@@ -119,6 +118,7 @@ public class GameDirector : MonoBehaviour
         }
     }
 
+    //左に移動させるメソッド
     private void MoveLeft()
     {
         foreach (BlockController bc in blockControllerList)
@@ -141,6 +141,7 @@ public class GameDirector : MonoBehaviour
         }
     }
 
+    //下に移動させるメソッド
     private void MoveDown()
     {
         foreach (BlockController bc in blockControllerList)
@@ -163,6 +164,7 @@ public class GameDirector : MonoBehaviour
         }
     }
 
+    //上に移動させるメソッド
     private void MoveUp()
     {
         foreach (BlockController bc in blockControllerList)
