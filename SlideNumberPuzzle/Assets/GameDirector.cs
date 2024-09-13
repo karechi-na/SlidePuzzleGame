@@ -114,7 +114,6 @@ public class GameDirector : MonoBehaviour
                 if (bc.gridPosition.x < 3 - count)
                 {
                     bc.transformRight((int)((3 - count) - bc.gridPosition.x));
-                    bc.gridPosition.x = 3 - count;
                 }
             }
         }
@@ -137,7 +136,6 @@ public class GameDirector : MonoBehaviour
                 if (bc.gridPosition.x > count)
                 {
                     bc.transformLeft((int) bc.gridPosition.x - count);
-                    bc.gridPosition.x = count;
                 }
             }
         }
@@ -160,7 +158,6 @@ public class GameDirector : MonoBehaviour
                 if (bc.gridPosition.y < 3 - count)
                 {
                     bc.transformDown((int)((3 - count) - bc.gridPosition.y));
-                    bc.gridPosition.y = 3 - count;
                 }
             }
         }
@@ -183,7 +180,6 @@ public class GameDirector : MonoBehaviour
                 if (bc.gridPosition.y > count)
                 {
                     bc.transformUp((int)bc.gridPosition.y - count);
-                    bc.gridPosition.y = count;
                 }
             }
         }
