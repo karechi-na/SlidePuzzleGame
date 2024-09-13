@@ -5,89 +5,113 @@ using DG.Tweening;
 
 public class BlockController : MonoBehaviour
 {
-
+    [SerializeField] private GameObject target;
     private Vector2 startPos;
+    public bool isTransform = false;
+    private GameDirector gameDirector;
+    public Vector2 gridPosition = Vector2.zero;
 
-
-
-    // Start is called before the first frame update
     void Start()
     {
 
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        float posi = 3;
-        float xPosi = 0;
-        float yPosi = 0;
 
-        if (Input.GetMouseButtonDown(0))
-        {
-            this.startPos = Input.mousePosition;
-        }
-        else if (Input.GetMouseButtonUp(0))
-        {
-            Vector2 endPos = Input.mousePosition;
-            xPosi = Mathf.Abs(endPos.x - this.startPos.x);
-            yPosi = Mathf.Abs(endPos.y - this.startPos.y);
-            //ブロックの座標を取得
-            Transform myTransform = this.transform;
-            Vector3 pos = myTransform.position;
+    //// Update is called once per frame
+    //void Update()
+    //{
 
-            //マウスの移動した方向にブロックを動かす。
-            if (yPosi < xPosi && endPos.x - this.startPos.x < 0)
-            {
-                transformLeft(posi, pos.y);
-            }
-            else if (yPosi < xPosi && endPos.x - this.startPos.x > 0)
-            {
-                transformRight(posi, pos.y);
-            }
-            else if (xPosi < yPosi && endPos.y - this.startPos.y < 0)
-            {
-                transformDown(posi, pos.x);
-            }
-            else if (xPosi < yPosi && endPos.y - this.startPos.y > 0)
-            {
-                transformUp(posi, pos.x);
-            }
+    //    float posi = 7;
+    //    float xPosi = 0;
+    //    float yPosi = 0;
 
-        }
-    }
+    //    if (Input.GetMouseButtonDown(0))
+    //    {
+    //        this.startPos = Input.mousePosition;
+    //    }
+    //    else if (Input.GetMouseButtonUp(0))
+    //    {
+    //        //Vector2 endPos = Input.mousePosition;
+    //        //xPosi = Mathf.Abs(endPos.x - this.startPos.x);
+    //        //yPosi = Mathf.Abs(endPos.y - this.startPos.y);
+    //        ////ブロックの座標を取得
+    //        //Transform myTransformBefore = this.transform;
+    //        //Vector3 posBefore = myTransformBefore.position;
+
+    //        ////マウスの移動した方向にブロックを動かす。
+    //        //if (yPosi < xPosi && endPos.x - this.startPos.x < 0)
+    //        //{
+    //        //    transformLeft(posi, posBefore.y);
+    //        //}
+    //        //else if (yPosi < xPosi && endPos.x - this.startPos.x > 0)
+    //        //{
+    //        //    transformRight(posi, posBefore.y);
+    //        //}
+    //        //else if (xPosi < yPosi && endPos.y - this.startPos.y < 0)
+    //        //{
+    //        //    transformDown(posi, posBefore.x);
+    //        //}
+    //        //else if (xPosi < yPosi && endPos.y - this.startPos.y > 0)
+    //        //{
+    //        //    transformUp(posi, posBefore.x);
+    //        //}
+
+    //        //移動前の座標と後の座標を比較して違う場合新しいブロックを生成
+    //        Transform myTransformAfter = this.transform;
+    //        Vector3 posAfter = myTransformAfter.position;
+    //        if (posAfter != posBefore)
+    //        {
+    //            //BlockGeneratorにisTransformを渡して生成させる
+    //            isTransform = true;
+    //        }
+    //    }
+
+    //    if ()
+    //    {
+
+    //    }
+
+    //}
+
+
 
     //左に移動
-    private float transformLeft(float leftPosi, float posY)
+    public void transformLeft(int moveGridCount)
     {
-        leftPosi = leftPosi * -1;
-        this.transform.DOMove(new Vector3(leftPosi, posY, 0), 0.5f);
-
-        return leftPosi;
+        this.transform.DOMove(new Vector3(transform.position.x - (2.0f * moveGridCount), transform.position.y, 0), 0.5f)
+                        .OnComplete(() =>
+                        {
+                            gridPosition.x -= moveGridCount;
+                        });
     }
 
     //右に移動
-    private float transformRight(float rightPosi, float posY)
+    public void transformRight(int moveGridCount)
     {
-        this.transform.DOMove(new Vector3(rightPosi, posY, 0), 0.5f);
-
-        return rightPosi;
+        this.transform.DOMove(new Vector3(transform.position.x + (2.0f * moveGridCount), transform.position.y, 0), 0.5f)
+                    .OnComplete(() =>
+                     {
+                         gridPosition.x += moveGridCount;
+                     });
     }
 
     //下に移動
-    private float transformDown(float downPosi, float posX)
+    public void transformDown(int moveGridCount)
     {
-        downPosi = downPosi * -1;
-        this.transform.DOMove(new Vector3(posX, downPosi, 0), 0.5f);
-
-        return downPosi;
+        this.transform.DOMove(new Vector3(transform.position.x, transform.position.y - (2.0f * moveGridCount), 0), 0.5f)
+            .OnComplete(() =>
+            {
+                gridPosition.y += moveGridCount;
+            });
     }
 
     //上に移動
-    private float transformUp(float upPosi, float posX)
+    public void transformUp(int moveGridCount)
     {
-        this.transform.DOMove(new Vector3(posX, upPosi, 0), 0.5f);
-
-        return upPosi;
+        this.transform.DOMove(new Vector3(transform.position.x, transform.position.y + (2.0f * moveGridCount), 0), 0.5f)
+                        .OnComplete(() =>
+                        {
+                            gridPosition.y -= moveGridCount;
+                        });
     }
 }
