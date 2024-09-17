@@ -11,8 +11,14 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/PlayScene.unity
     guid: 05a11fe3e0e78fa46ad664636445956f
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/GameScene.taku.unity
     guid: 3b6aecb5b69b77045afae23b74304d92
+  - enabled: 1
+    path: Assets/Scenes/ClearScene.unity
+    guid: b1467031c51fa6445ae6609193600d62
+  - enabled: 1
+    path: Assets/Scenes/GameOverScene.unity
+    guid: 9f8b682608635cc478a55c554babd5cc
   m_configObjects: {}
   m_UseUCBPForAssetBundles: 0
