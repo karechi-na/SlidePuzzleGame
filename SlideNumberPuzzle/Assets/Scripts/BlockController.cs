@@ -5,6 +5,8 @@ using DG.Tweening;
 
 public class BlockController : MonoBehaviour
 {
+    [SerializeField] private Sprite[] numberSpriteArray = null;
+    [SerializeField] private SpriteRenderer spriteRenderer = null;
     private Vector2 startPos;
     public bool isTransform = false;
     private GameDirector gameDirector;
