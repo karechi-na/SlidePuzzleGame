@@ -105,100 +105,100 @@ public class GameDirector : MonoBehaviour
     //右に移動させるメソッド
     private void MoveRight()
     {
-        Tween moveTween = null;
-
-        foreach (BlockController bc in blockControllerList)
+        for (int x = 2; x >= 0; x--)
         {
-            if (bc.gridPosition.x < 3)
+            for (int y = 0; y < 4; y++)
             {
-                int count = 0;
-                foreach (BlockController checkBc in blockControllerList)
+                var gridPos = new Vector2(x, y);
+                var bc = CheckBlockController(gridPos);
+                if (bc == null)
                 {
-                    if (bc.gridPosition.y == checkBc.gridPosition.y && bc.gridPosition.x < checkBc.gridPosition.x)
+                    continue;
+                }
+
+                // 移動先検索
+                int count = 0;
+                for (var check_x = x + 1; check_x < 4; check_x++)
+                {
+                    var checkGridPos = new Vector2(check_x, y);
+                    if (CheckBlockController(checkGridPos) == null)
                     {
                         count++;
                     }
                 }
 
-                if (bc.gridPosition.x < 3 - count)
+                if (count > 0)
                 {
-                    moveTween = bc.transformRight((int)((3 - count) - bc.gridPosition.x));
+                    bc.transformRight(count);
                 }
             }
-        }
-
-        if (moveTween != null)
-        {
-            moveTween.OnComplete(() => {
-                Debug.Log("MoveRight completed and CheckAndMergeBlocks called");
-                CheckAndMergeBlocks();
-            });
         }
     }
 
     //左に移動させるメソッド
     private void MoveLeft()
     {
-        Tween moveTween = null;
-
-        foreach (BlockController bc in blockControllerList)
+        for (int i = 1; i >= 3; i++)
         {
-            if (bc.gridPosition.x > 0)
+            for (int j = 0; j < 4; j++)
             {
-                int count = 0;
-                foreach (BlockController checkBc in blockControllerList)
+                var gridPos = new Vector2(i, j);
+                var bc = CheckBlockController(gridPos);
+                if (bc == null)
                 {
-                    if (bc.gridPosition.y == checkBc.gridPosition.y && bc.gridPosition.x > checkBc.gridPosition.x)
+                    continue;
+                }
+
+                // 移動先検索
+                int count = 0;
+                for (var k = i + 1; k < 4; k--)
+                {
+                    var checkGridPos = new Vector2(k, j);
+                    if (CheckBlockController(checkGridPos) != null)
                     {
                         count++;
                     }
                 }
+
                 if (bc.gridPosition.x > count)
                 {
-                    moveTween = bc.transformLeft((int)((3 - count) + bc.gridPosition.x));
+                    bc.transformLeft((int)(bc.gridPosition.x - count));
                 }
             }
         }
 
-        if (moveTween != null)
-        {
-            moveTween.OnComplete(() => {
-                Debug.Log("MoveRight completed and CheckAndMergeBlocks called");
-                CheckAndMergeBlocks();
-            });
-        }
     }
 
     //下に移動させるメソッド
     private void MoveDown()
     {
-        Tween moveTween = null;
-
-        foreach (BlockController bc in blockControllerList)
+        for (int y = 2; y >= 0; y--)
         {
-            if (bc.gridPosition.y < 3)
+            for (int x = 0; x < 4; x++)
             {
-                int count = 0;
-                foreach (BlockController checkBc in blockControllerList)
+                var gridPos = new Vector2(y, x);
+                var bc = CheckBlockController(gridPos);
+                if (bc == null)
                 {
-                    if (bc.gridPosition.x == checkBc.gridPosition.x && bc.gridPosition.y < checkBc.gridPosition.y)
+                    continue;
+                }
+
+                // 移動先検索
+                int count = 0;
+                for (var check_x = y + 1; check_x < 4; check_x++)
+                {
+                    var checkGridPos = new Vector2(check_x, x);
+                    if (CheckBlockController(checkGridPos) == null)
                     {
                         count++;
                     }
                 }
-                if (bc.gridPosition.y < 3 - count)
+
+                if (count > 0)
                 {
-                    moveTween = bc.transformDown((int)((3 - count) - bc.gridPosition.y));
+                    bc.transformDown(count);
                 }
             }
-        }
-
-        if (moveTween != null)
-        {
-            moveTween.OnComplete(() => {
-                Debug.Log("MoveRight completed and CheckAndMergeBlocks called");
-                CheckAndMergeBlocks();
-            });
         }
     }
 
@@ -233,6 +233,22 @@ public class GameDirector : MonoBehaviour
                 CheckAndMergeBlocks();
             });
         }
+    }
+
+    private BlockController CheckBlockController(Vector2 gridPos)
+    {
+        BlockController result = null;
+
+        foreach (var blockController in blockControllerList)
+        {
+            if (blockController.gridPosition == gridPos)
+            {
+                result = blockController;
+                break;
+            }
+        }
+
+        return result;
     }
 
     public int CompareDirectionX(int xCoordinate)

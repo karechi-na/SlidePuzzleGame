@@ -5,6 +5,7 @@ using DG.Tweening;
 
 public class BlockController : MonoBehaviour
 {
+    [Header("ƒCƒ[ƒW‚Ì”z—ñ(‚O‚©‚ç‡‚É‚Q`‚Q‚O‚S‚W‚Ü‚Å‚¢‚ê‚é)")]
     [SerializeField] private Sprite[] numberSpriteArray = null;
     [SerializeField] private SpriteRenderer spriteRenderer = null;
     private Vector2 startPos;
@@ -15,12 +16,8 @@ public class BlockController : MonoBehaviour
 
     void Start()
     {
-
+        spriteRenderer.sprite = numberSpriteArray[0];
     }
-
-
-    
-
 
 
     //¶‚ÉˆÚ“®

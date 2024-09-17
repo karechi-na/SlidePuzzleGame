@@ -118,6 +118,7 @@ MonoBehaviour:
   spriteRenderer: {fileID: 2768157553946959482}
   isTransform: 0
   gridPosition: {x: 0, y: 0}
+  number: 2
 --- !u!61 &5960832764017257975
 BoxCollider2D:
   m_ObjectHideFlags: 0
