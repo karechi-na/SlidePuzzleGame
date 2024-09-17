@@ -22,9 +22,9 @@ public class BlockController : MonoBehaviour
 
 
     //¶‚ÉˆÚ“®
-    public void transformLeft(int moveGridCount)
+    public Tween transformLeft(int moveGridCount)
     {
-        this.transform.DOMove(new Vector3(transform.position.x - (2.0f * moveGridCount), transform.position.y, 0), 0.5f)
+        return this.transform.DOMove(new Vector3(transform.position.x - (2.0f * moveGridCount), transform.position.y, 0), 0.5f)
                         .OnComplete(() =>
                         {
                             gridPosition.x -= moveGridCount;
@@ -42,9 +42,9 @@ public class BlockController : MonoBehaviour
     }
 
     //‰º‚ÉˆÚ“®
-    public void transformDown(int moveGridCount)
+    public Tween transformDown(int moveGridCount)
     {
-        this.transform.DOMove(new Vector3(transform.position.x, transform.position.y - (2.0f * moveGridCount), 0), 0.5f)
+        return this.transform.DOMove(new Vector3(transform.position.x, transform.position.y - (2.0f * moveGridCount), 0), 0.5f)
             .OnComplete(() =>
             {
                 gridPosition.y += moveGridCount;
@@ -52,9 +52,9 @@ public class BlockController : MonoBehaviour
     }
 
     //ã‚ÉˆÚ“®
-    public void transformUp(int moveGridCount)
+    public Tween  transformUp(int moveGridCount)
     {
-        this.transform.DOMove(new Vector3(transform.position.x, transform.position.y + (2.0f * moveGridCount), 0), 0.5f)
+        return this.transform.DOMove(new Vector3(transform.position.x, transform.position.y + (2.0f * moveGridCount), 0), 0.5f)
                         .OnComplete(() =>
                         {
                             gridPosition.y -= moveGridCount;

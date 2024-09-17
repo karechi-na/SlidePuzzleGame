@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 //using UnityEngine.UI;
 
 public class GameDirector : MonoBehaviour
@@ -104,6 +105,8 @@ public class GameDirector : MonoBehaviour
     //右に移動させるメソッド
     private void MoveRight()
     {
+        Tween moveTween = null;
+
         foreach (BlockController bc in blockControllerList)
         {
             if (bc.gridPosition.x < 3)
@@ -119,15 +122,25 @@ public class GameDirector : MonoBehaviour
 
                 if (bc.gridPosition.x < 3 - count)
                 {
-                    bc.transformRight((int)((3 - count) - bc.gridPosition.x));
+                    moveTween = bc.transformRight((int)((3 - count) - bc.gridPosition.x));
                 }
             }
+        }
+
+        if (moveTween != null)
+        {
+            moveTween.OnComplete(() => {
+                Debug.Log("MoveRight completed and CheckAndMergeBlocks called");
+                CheckAndMergeBlocks();
+            });
         }
     }
 
     //左に移動させるメソッド
     private void MoveLeft()
     {
+        Tween moveTween = null;
+
         foreach (BlockController bc in blockControllerList)
         {
             if (bc.gridPosition.x > 0)
@@ -142,15 +155,25 @@ public class GameDirector : MonoBehaviour
                 }
                 if (bc.gridPosition.x > count)
                 {
-                    bc.transformLeft((int) bc.gridPosition.x - count);
+                    moveTween = bc.transformLeft((int)((3 - count) + bc.gridPosition.x));
                 }
             }
+        }
+
+        if (moveTween != null)
+        {
+            moveTween.OnComplete(() => {
+                Debug.Log("MoveRight completed and CheckAndMergeBlocks called");
+                CheckAndMergeBlocks();
+            });
         }
     }
 
     //下に移動させるメソッド
     private void MoveDown()
     {
+        Tween moveTween = null;
+
         foreach (BlockController bc in blockControllerList)
         {
             if (bc.gridPosition.y < 3)
@@ -165,15 +188,25 @@ public class GameDirector : MonoBehaviour
                 }
                 if (bc.gridPosition.y < 3 - count)
                 {
-                    bc.transformDown((int)((3 - count) - bc.gridPosition.y));
+                    moveTween = bc.transformDown((int)((3 - count) - bc.gridPosition.y));
                 }
             }
+        }
+
+        if (moveTween != null)
+        {
+            moveTween.OnComplete(() => {
+                Debug.Log("MoveRight completed and CheckAndMergeBlocks called");
+                CheckAndMergeBlocks();
+            });
         }
     }
 
     //上に移動させるメソッド
     private void MoveUp()
     {
+        Tween moveTween = null;
+
         foreach (BlockController bc in blockControllerList)
         {
             if (bc.gridPosition.y > 0)
@@ -188,9 +221,17 @@ public class GameDirector : MonoBehaviour
                 }
                 if (bc.gridPosition.y > count)
                 {
-                    bc.transformUp((int)bc.gridPosition.y - count);
+                    moveTween = bc.transformUp((int)((3 - count) + bc.gridPosition.y));
                 }
             }
+        }
+
+        if (moveTween != null)
+        {
+            moveTween.OnComplete(() => {
+                Debug.Log("MoveRight completed and CheckAndMergeBlocks called");
+                CheckAndMergeBlocks();
+            });
         }
     }
 
