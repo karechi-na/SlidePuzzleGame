@@ -9,6 +9,7 @@ public class BlockController : MonoBehaviour
     public bool isTransform = false;
     private GameDirector gameDirector;
     public Vector2 gridPosition = Vector2.zero;
+    public int number = 2;
 
     void Start()
     {
@@ -31,9 +32,9 @@ public class BlockController : MonoBehaviour
     }
 
     //‰E‚ÉˆÚ“®
-    public void transformRight(int moveGridCount)
+    public Tween transformRight(int moveGridCount)
     {
-        this.transform.DOMove(new Vector3(transform.position.x + (2.0f * moveGridCount), transform.position.y, 0), 0.5f)
+        return this.transform.DOMove(new Vector3(transform.position.x + (2.0f * moveGridCount), transform.position.y, 0), 0.5f)
                     .OnComplete(() =>
                      {
                          gridPosition.x += moveGridCount;
@@ -58,5 +59,25 @@ public class BlockController : MonoBehaviour
                         {
                             gridPosition.y -= moveGridCount;
                         });
+    }
+
+    public void MergeBlock(BlockController otherBlock)
+    {
+        this.number *= 2;
+        Debug.Log("Merged block number:" + this.number);
+        UpdateSprite();
+    }
+
+    private void UpdateSprite()
+    {
+        int index = (int)Mathf.Log(number, 2) - 1;
+        if (index >= 0 && index < numberSpriteArray.Length)
+        {
+            spriteRenderer.sprite = numberSpriteArray[index];
+        }
+        else
+        {
+            Debug.LogError("Sprite index out of bounds: " + index + ", for number: " + number);
+        }
     }
 }

@@ -92,6 +92,11 @@ public class GameDirector : MonoBehaviour
                MoveUp();
             }
         }
+
+        if (Input.GetKeyDown(KeyCode.Space))  // スペースキーを押すとチェック
+        {
+            CheckAndMergeBlocks();
+        }
     }
 
 
@@ -231,5 +236,27 @@ public class GameDirector : MonoBehaviour
         }
 
         return yCoordinate;
+    }
+
+   private void CheckAndMergeBlocks()
+    {
+        Debug.Log("OK!");
+
+        for(int i = 0; i < blockControllerList.Count; i++)
+        {
+            for(int j = i + 1; j < blockControllerList.Count; j++)
+            {
+                BlockController blockA = blockControllerList[i];
+                BlockController blockB = blockControllerList[j];
+
+                //同じ位置にあり、おなじ数字なら合体
+                if(blockA.gridPosition == blockB.gridPosition && blockA.number == blockB.number)
+                {
+                    blockA.MergeBlock(blockB);
+                    blockControllerList.Remove(blockB);
+                    Destroy(blockB.gameObject);
+                }
+            }
+        }
     }
 }
