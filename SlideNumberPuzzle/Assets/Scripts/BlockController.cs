@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using DG.Tweening;
 
 public class BlockController : MonoBehaviour
@@ -12,13 +13,19 @@ public class BlockController : MonoBehaviour
     public bool isTransform = false;
     private GameDirector gameDirector;
     public Vector2 gridPosition = Vector2.zero;
-    public int number = 2;
+    public int number { private set; get; } = 0;
+    public bool isMerge = false;
 
     void Start()
     {
-        spriteRenderer.sprite = numberSpriteArray[0];
+        spriteRenderer.sprite = numberSpriteArray[number];
     }
 
+    public void ChangeNextBlockNumber()
+    {
+        number++;
+        spriteRenderer.sprite = numberSpriteArray[number];
+    }
 
     //¶‚ÉˆÚ“®
     public Tween transformLeft(int moveGridCount)
@@ -26,7 +33,14 @@ public class BlockController : MonoBehaviour
         return this.transform.DOMove(new Vector3(transform.position.x - (2.0f * moveGridCount), transform.position.y, 0), 0.5f)
                         .OnComplete(() =>
                         {
-                            gridPosition.x -= moveGridCount;
+                            if (isMerge)
+                            {
+                                Destroy(gameObject);
+                            }
+                            else
+                            {
+                                gridPosition.x -= moveGridCount;
+                            }
                         });
     }
 
@@ -35,9 +49,16 @@ public class BlockController : MonoBehaviour
     {
         return this.transform.DOMove(new Vector3(transform.position.x + (2.0f * moveGridCount), transform.position.y, 0), 0.5f)
                     .OnComplete(() =>
-                     {
-                         gridPosition.x += moveGridCount;
-                     });
+                    {
+                        if (isMerge)
+                        {
+                            Destroy(gameObject);
+                        }
+                        else
+                        {
+                            gridPosition.x += moveGridCount;
+                        }
+                    });
     }
 
     //‰º‚ÉˆÚ“®
@@ -46,17 +67,31 @@ public class BlockController : MonoBehaviour
         return this.transform.DOMove(new Vector3(transform.position.x, transform.position.y - (2.0f * moveGridCount), 0), 0.5f)
             .OnComplete(() =>
             {
-                gridPosition.y += moveGridCount;
+                if (isMerge)
+                {
+                    Destroy(gameObject);
+                }
+                else
+                {
+                    gridPosition.y += moveGridCount;
+                }
             });
     }
 
     //ã‚ÉˆÚ“®
-    public Tween  transformUp(int moveGridCount)
+    public Tween transformUp(int moveGridCount)
     {
         return this.transform.DOMove(new Vector3(transform.position.x, transform.position.y + (2.0f * moveGridCount), 0), 0.5f)
                         .OnComplete(() =>
                         {
-                            gridPosition.y -= moveGridCount;
+                            if (isMerge)
+                            {
+                                Destroy(gameObject);
+                            }
+                            else
+                            {
+                                gridPosition.y -= moveGridCount;
+                            }
                         });
     }
 
