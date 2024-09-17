@@ -4,7 +4,7 @@ using System.Diagnostics;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class ToGameSceneButton : MonoBehaviour
+public class ToGameSceneButton2 : MonoBehaviour
 {
     
     public void OnClicToGameSceneButton()
