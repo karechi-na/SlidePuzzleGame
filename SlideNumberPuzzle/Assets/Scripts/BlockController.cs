@@ -1,116 +1,117 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using DG.Tweening;
 
 public class BlockController : MonoBehaviour
 {
+    [Header("イメージの配列(０から順に２～２０４８までいれる)")]
+    [SerializeField] private Sprite[] numberSpriteArray = null;
+    [SerializeField] private SpriteRenderer spriteRenderer = null;
     private Vector2 startPos;
     public bool isTransform = false;
     private GameDirector gameDirector;
     public Vector2 gridPosition = Vector2.zero;
+    public int number { private set; get; } = 0;
+    public bool isMerge = false;
 
     void Start()
     {
-
+        spriteRenderer.sprite = numberSpriteArray[number];
     }
 
-
-    //// Update is called once per frame
-    //void Update()
-    //{
-
-    //    float posi = 7;
-    //    float xPosi = 0;
-    //    float yPosi = 0;
-
-    //    if (Input.GetMouseButtonDown(0))
-    //    {
-    //        this.startPos = Input.mousePosition;
-    //    }
-    //    else if (Input.GetMouseButtonUp(0))
-    //    {
-    //        //Vector2 endPos = Input.mousePosition;
-    //        //xPosi = Mathf.Abs(endPos.x - this.startPos.x);
-    //        //yPosi = Mathf.Abs(endPos.y - this.startPos.y);
-    //        ////ブロックの座標を取得
-    //        //Transform myTransformBefore = this.transform;
-    //        //Vector3 posBefore = myTransformBefore.position;
-
-    //        ////マウスの移動した方向にブロックを動かす。
-    //        //if (yPosi < xPosi && endPos.x - this.startPos.x < 0)
-    //        //{
-    //        //    transformLeft(posi, posBefore.y);
-    //        //}
-    //        //else if (yPosi < xPosi && endPos.x - this.startPos.x > 0)
-    //        //{
-    //        //    transformRight(posi, posBefore.y);
-    //        //}
-    //        //else if (xPosi < yPosi && endPos.y - this.startPos.y < 0)
-    //        //{
-    //        //    transformDown(posi, posBefore.x);
-    //        //}
-    //        //else if (xPosi < yPosi && endPos.y - this.startPos.y > 0)
-    //        //{
-    //        //    transformUp(posi, posBefore.x);
-    //        //}
-
-    //        //移動前の座標と後の座標を比較して違う場合新しいブロックを生成
-    //        Transform myTransformAfter = this.transform;
-    //        Vector3 posAfter = myTransformAfter.position;
-    //        if (posAfter != posBefore)
-    //        {
-    //            //BlockGeneratorにisTransformを渡して生成させる
-    //            isTransform = true;
-    //        }
-    //    }
-
-    //    if ()
-    //    {
-
-    //    }
-
-    //}
-
-
+    public void ChangeNextBlockNumber()
+    {
+        number++;
+        spriteRenderer.sprite = numberSpriteArray[number];
+    }
 
     //左に移動
-    public void transformLeft(int moveGridCount)
+    public Tween transformLeft(int moveGridCount)
     {
-        this.transform.DOMove(new Vector3(transform.position.x - (2.0f * moveGridCount), transform.position.y, 0), 0.5f)
+        return this.transform.DOMove(new Vector3(transform.position.x - (2.0f * moveGridCount), transform.position.y, 0), 0.5f)
                         .OnComplete(() =>
                         {
-                            gridPosition.x -= moveGridCount;
+                            if (isMerge)
+                            {
+                                Destroy(gameObject);
+                            }
+                            else
+                            {
+                                gridPosition.x -= moveGridCount;
+                            }
                         });
     }
 
     //右に移動
-    public void transformRight(int moveGridCount)
+    public Tween transformRight(int moveGridCount)
     {
-        this.transform.DOMove(new Vector3(transform.position.x + (2.0f * moveGridCount), transform.position.y, 0), 0.5f)
+        return this.transform.DOMove(new Vector3(transform.position.x + (2.0f * moveGridCount), transform.position.y, 0), 0.5f)
                     .OnComplete(() =>
-                     {
-                         gridPosition.x += moveGridCount;
-                     });
+                    {
+                        if (isMerge)
+                        {
+                            Destroy(gameObject);
+                        }
+                        else
+                        {
+                            gridPosition.x += moveGridCount;
+                        }
+                    });
     }
 
     //下に移動
-    public void transformDown(int moveGridCount)
+    public Tween transformDown(int moveGridCount)
     {
-        this.transform.DOMove(new Vector3(transform.position.x, transform.position.y - (2.0f * moveGridCount), 0), 0.5f)
+        return this.transform.DOMove(new Vector3(transform.position.x, transform.position.y - (2.0f * moveGridCount), 0), 0.5f)
             .OnComplete(() =>
             {
-                gridPosition.y += moveGridCount;
+                if (isMerge)
+                {
+                    Destroy(gameObject);
+                }
+                else
+                {
+                    gridPosition.y += moveGridCount;
+                }
             });
     }
 
     //上に移動
-    public void transformUp(int moveGridCount)
+    public Tween transformUp(int moveGridCount)
     {
-        this.transform.DOMove(new Vector3(transform.position.x, transform.position.y + (2.0f * moveGridCount), 0), 0.5f)
+        return this.transform.DOMove(new Vector3(transform.position.x, transform.position.y + (2.0f * moveGridCount), 0), 0.5f)
                         .OnComplete(() =>
                         {
-                            gridPosition.y -= moveGridCount;
+                            if (isMerge)
+                            {
+                                Destroy(gameObject);
+                            }
+                            else
+                            {
+                                gridPosition.y -= moveGridCount;
+                            }
                         });
+    }
+
+    public void MergeBlock(BlockController otherBlock)
+    {
+        this.number *= 2;
+        Debug.Log("Merged block number:" + this.number);
+        UpdateSprite();
+    }
+
+    private void UpdateSprite()
+    {
+        int index = (int)Mathf.Log(number, 2) - 1;
+        if (index >= 0 && index < numberSpriteArray.Length)
+        {
+            spriteRenderer.sprite = numberSpriteArray[index];
+        }
+        else
+        {
+            Debug.LogError("Sprite index out of bounds: " + index + ", for number: " + number);
+        }
     }
 }

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class UnionController : MonoBehaviour
 {
-    private void unionCheck()
+    public void unionCheck()
     {
 
     }

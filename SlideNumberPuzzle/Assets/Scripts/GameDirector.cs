@@ -1,22 +1,29 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
+//using UnityEngine.UI;
 
 public class GameDirector : MonoBehaviour
 {
     [SerializeField] private GameObject SquareNo2;
-    private BlockGenerator generator;
+    //private BlockController blockUnion;
+    //private BlockGenerator generator;
     private int keepX = 0;
     private int keepY = 0;
     private int count = 0;
     public int xCoordinate = 0;
     public int yCoordinate = 0;
     private Vector2 startPos;
-    private List<BlockController> blockControllerList = new List<BlockController>();
-    //public bool[,] array2D = new bool[4, 4] { { false, false, false, false},
-    //                                          { false, false, false, false},
-    //                                          { false, false, false, false},
-    //                                          { false, false, false, false} };
+    public List<BlockController> blockControllerList = new List<BlockController>();
+
+    private bool[,] isFieldActive = new bool[,]
+    {
+        { false, false, false, false },
+        { false, false, false, false },
+        { false, false, false, false },
+        { false, false, false, false },
+    };
 
     // Start is called before the first frame update
     void Start()
@@ -41,25 +48,22 @@ public class GameDirector : MonoBehaviour
                 GameObject square = Instantiate(SquareNo2);
                 square.transform.position = new Vector3(horizontal, vertical, 0);
                 BlockController bc = square.GetComponent<BlockController>();
-                bc.gridPosition = new Vector2(Mathf.Floor(xCoordinate / 2.0f), Mathf.Floor(yCoordinate / 2.0f));
+                bc.gridPosition = new Vector2(Mathf.Abs(Mathf.Floor(xCoordinate / 2.0f)), Mathf.Floor(yCoordinate / 2.0f));
                 blockControllerList.Add(bc);
+
                 keepX = horizontal;
                 keepY = vertical;
                 count++;
-                //array2D[xCoordinate, yCoordinate] = true;
             }
             if (count == 2)
             {
                 break;
             }
         }
-
-
     }
 
     private void Update()
     {
-        float posi = 7;
         float xPosi = 0;
         float yPosi = 0;
 
@@ -72,10 +76,6 @@ public class GameDirector : MonoBehaviour
             Vector2 endPos = Input.mousePosition;
             xPosi = Mathf.Abs(endPos.x - this.startPos.x);
             yPosi = Mathf.Abs(endPos.y - this.startPos.y);
-            //ブロックの座標を取得
-            Transform myTransformBefore = this.transform;
-            Vector3 posBefore = myTransformBefore.position;
-
             //マウスの移動した方向にブロックを動かす。
             if (yPosi < xPosi && endPos.x - this.startPos.x < 0)
             {
@@ -91,100 +91,325 @@ public class GameDirector : MonoBehaviour
             }
             else if (xPosi < yPosi && endPos.y - this.startPos.y > 0)
             {
-               MoveUp();
+                MoveUp();
+            }
+        }
+
+        if (Input.GetKeyDown(KeyCode.Space))  // スペースキーを押すとチェック
+        {
+            CheckAndMergeBlocks();
+        }
+    }
+
+    private void RefleshFieldActiveList()
+    {
+        for (var x = 0; x < 4; x++)
+        {
+            for (var y = 0; y < 4; y++)
+            {
+                isFieldActive[x, y] = false;
             }
         }
     }
 
+    private void CreateNewBlock()
+    {
+        var emptyPositionList = new List<Vector2>();
+        for (var x = 0; x < 4; x++)
+        {
+            for (var y = 0; y < 4; y++)
+            {
+                if (!isFieldActive[x, y])
+                {
+                    emptyPositionList.Add(new Vector2(x, y));
+                }
+            }
+        }
+
+        if (emptyPositionList.Count != 0)
+        {
+            var random = Random.Range(0, emptyPositionList.Count);
+            var createPos = emptyPositionList[random];
+
+            GameObject square = Instantiate(SquareNo2);
+            square.transform.position = new Vector3(createPos.x * 2.0f + 1.0f, -createPos.y * 2.0f - 1.0f, 0); ;
+
+            BlockController bc = square.GetComponent<BlockController>();
+            bc.gridPosition = createPos;
+            blockControllerList.Add(bc);
+        }
+    }
+
+    //右に移動させるメソッド
     private void MoveRight()
     {
-        foreach (BlockController bc in blockControllerList)
+        RefleshFieldActiveList();
+        bool isMoveBlock = false;
+        for (int x = 2; x >= 0; x--)
         {
-            if (bc.gridPosition.x < 3)
+            for (int y = 0; y < 4; y++)
             {
-                int count = 0;
-                foreach (BlockController checkBc in blockControllerList)
+                var gridPos = new Vector2(x, y);
+                var bc = CheckBlockController(gridPos);
+                if (bc == null)
                 {
-                    if (bc.gridPosition.y == checkBc.gridPosition.y && bc.gridPosition.x < checkBc.gridPosition.x)
+                    continue;
+                }
+
+                // 移動先検索
+                int count = 0;
+                bool isNear = false;
+                for (var check_x = x + 1; check_x < 4; check_x++)
+                {
+                    var checkGridPos = new Vector2(check_x, y);
+                    var checkBc = CheckBlockController(checkGridPos);
+                    if (checkBc == null ||
+                        checkBc.isMerge)
                     {
                         count++;
                     }
+                    else if (!isNear)
+                    {
+                        isNear = true;
+                        if (bc.number == checkBc.number)
+                        {
+                            bc.isMerge = true;
+                            blockControllerList.Remove(bc);
+                            checkBc.ChangeNextBlockNumber();
+                            count++;
+                        }
+                    }
+
+                    isFieldActive[check_x, y] = true;
                 }
 
-                if (bc.gridPosition.x < 3 - count)
+                if (count > 0)
                 {
-                    bc.transformRight((int)((3 - count) - bc.gridPosition.x));
+                    bc.transformRight(count);
+                    isMoveBlock = true;
+                }
+                else
+                {
+                    isFieldActive[x, y] = true;
                 }
             }
         }
+
+        if (!isMoveBlock)
+        {
+            return;
+        }
+
+        CreateNewBlock();
     }
 
+    //左に移動させるメソッド
     private void MoveLeft()
     {
-        foreach (BlockController bc in blockControllerList)
+        RefleshFieldActiveList();
+        bool isMoveBlock = false;
+        for (int x = 1; x < 4; x++)
         {
-            if (bc.gridPosition.x > 0)
+            for (int y = 0; y < 4; y++)
             {
-                int count = 0;
-                foreach (BlockController checkBc in blockControllerList)
+                var gridPos = new Vector2(x, y);
+                var bc = CheckBlockController(gridPos);
+                if (bc == null)
                 {
-                    if (bc.gridPosition.y == checkBc.gridPosition.y && bc.gridPosition.x > checkBc.gridPosition.x)
+                    continue;
+                }
+
+                // 移動先検索
+                int count = 0;
+                bool isNear = false;
+                for (var check_x = x - 1; check_x >= 0; check_x--)
+                {
+                    var checkGridPos = new Vector2(check_x, y);
+                    var checkBc = CheckBlockController(checkGridPos);
+                    if (checkBc == null ||
+                        checkBc.isMerge)
                     {
                         count++;
                     }
+                    else if (!isNear)
+                    {
+                        isNear = true;
+                        if (bc.number == checkBc.number)
+                        {
+                            bc.isMerge = true;
+                            blockControllerList.Remove(bc);
+                            checkBc.ChangeNextBlockNumber();
+                            count++;
+                        }
+                    }
+
+                    isFieldActive[check_x, y] = true;
                 }
-                if (bc.gridPosition.x > count)
+
+                if (count > 0)
                 {
-                    bc.transformLeft((int) bc.gridPosition.x - count);
+                    bc.transformLeft(count);
+                    isMoveBlock = true;
+                }
+                else
+                {
+                    isFieldActive[x, y] = true;
                 }
             }
         }
+
+        if (!isMoveBlock)
+        {
+            return;
+        }
+
+        CreateNewBlock();
     }
 
+    //下に移動させるメソッド
     private void MoveDown()
     {
-        foreach (BlockController bc in blockControllerList)
+        RefleshFieldActiveList();
+        bool isMoveBlock = false;
+        for (var y = 2; y >= 0; y--)
         {
-            if (bc.gridPosition.y < 3)
+            for (var x = 0; x < 4; x++)
             {
-                int count = 0;
-                foreach (BlockController checkBc in blockControllerList)
+                var gridPos = new Vector2(x, y);
+                var bc = CheckBlockController(gridPos);
+                if (bc == null)
                 {
-                    if (bc.gridPosition.x == checkBc.gridPosition.x && bc.gridPosition.y < checkBc.gridPosition.y)
+                    continue;
+                }
+
+                // 移動先検索
+                int count = 0;
+                bool isNear = false;
+                for (var check_ｙ = y + 1; check_ｙ < 4; check_ｙ++)
+                {
+                    var checkGridPos = new Vector2(x, check_ｙ);
+                    var checkBc = CheckBlockController(checkGridPos);
+                    if (checkBc == null ||
+                        checkBc.isMerge)
                     {
                         count++;
                     }
+                    else if (!isNear)
+                    {
+                        isNear = true;
+                        if (bc.number == checkBc.number)
+                        {
+                            bc.isMerge = true;
+                            blockControllerList.Remove(bc);
+                            checkBc.ChangeNextBlockNumber();
+                            count++;
+                        }
+                    }
+
+                    isFieldActive[x, check_ｙ] = true;
                 }
-                if (bc.gridPosition.y < 3 - count)
+
+                if (count > 0)
                 {
-                    bc.transformDown((int)((3 - count) - bc.gridPosition.y));
+                    bc.transformDown(count);
+                    isMoveBlock = true;
+                }
+                else
+                {
+                    isFieldActive[x, y] = true;
                 }
             }
         }
+
+        if (!isMoveBlock)
+        {
+            return;
+        }
+
+        CreateNewBlock();
     }
 
+    //上に移動させるメソッド
     private void MoveUp()
     {
-        foreach (BlockController bc in blockControllerList)
+        RefleshFieldActiveList();
+        bool isMoveBlock = false;
+        for (var y = 1; y < 4; y++)
         {
-            if (bc.gridPosition.y > 0)
+            for (var x = 0; x < 4; x++)
             {
-                int count = 0;
-                foreach (BlockController checkBc in blockControllerList)
+                var gridPos = new Vector2(x, y);
+                var bc = CheckBlockController(gridPos);
+                if (bc == null)
                 {
-                    if (bc.gridPosition.x == checkBc.gridPosition.x && bc.gridPosition.y > checkBc.gridPosition.y)
+                    continue;
+                }
+
+                // 移動先検索
+                int count = 0;
+                bool isNear = false;
+                for (var check_ｙ = y - 1; check_ｙ >= 0; check_ｙ--)
+                {
+                    var checkGridPos = new Vector2(x, check_ｙ);
+                    var checkBc = CheckBlockController(checkGridPos);
+                    if (checkBc == null ||
+                        checkBc.isMerge)
                     {
                         count++;
                     }
+                    else if (!isNear)
+                    {
+                        isNear = true;
+                        if (bc.number == checkBc.number)
+                        {
+                            bc.isMerge = true;
+                            blockControllerList.Remove(bc);
+                            checkBc.ChangeNextBlockNumber();
+                            count++;
+                        }
+                    }
+
+                    isFieldActive[x, check_ｙ] = true;
                 }
-                if (bc.gridPosition.y > count)
+
+                if (count > 0)
                 {
-                    bc.transformUp((int)bc.gridPosition.y - count);
+                    bc.transformUp(count);
+                    isMoveBlock = true;
+                }
+                else
+                {
+                    isFieldActive[x, y] = true;
                 }
             }
         }
+
+        if (!isMoveBlock)
+        {
+            return;
+        }
+
+        CreateNewBlock();
     }
 
+    /// <summary>
+    /// ブロックコントローラー検索
+    /// </summary>
+    private BlockController CheckBlockController(Vector2 gridPos)
+    {
+        BlockController result = null;
+
+        foreach (var blockController in blockControllerList)
+        {
+            if (blockController.gridPosition == gridPos)
+            {
+                result = blockController;
+                break;
+            }
+        }
+
+        return result;
+    }
     public int CompareDirectionX(int xCoordinate)
     {
         if (xCoordinate == 1)
@@ -227,5 +452,27 @@ public class GameDirector : MonoBehaviour
         }
 
         return yCoordinate;
+    }
+
+    private void CheckAndMergeBlocks()
+    {
+        Debug.Log("OK!");
+
+        for (int i = 0; i < blockControllerList.Count; i++)
+        {
+            for (int j = i + 1; j < blockControllerList.Count; j++)
+            {
+                BlockController blockA = blockControllerList[i];
+                BlockController blockB = blockControllerList[j];
+
+                //同じ位置にあり、おなじ数字なら合体
+                if (blockA.gridPosition == blockB.gridPosition && blockA.number == blockB.number)
+                {
+                    blockA.MergeBlock(blockB);
+                    blockControllerList.Remove(blockB);
+                    Destroy(blockB.gameObject);
+                }
+            }
+        }
     }
 }
