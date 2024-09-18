@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 using TMPro;
+using UnityEngine.SceneManagement;
 //using UnityEngine.UI;
 
 public class GameDirector : MonoBehaviour
@@ -15,14 +16,14 @@ public class GameDirector : MonoBehaviour
     private int keepX = 0;
     private int keepY = 0;
     private int count = 0;
-    private int gameScore = 0;
-    private float gameTime = 0;
     private float actionTime = 0;
     public int xCoordinate = 0;
     public int yCoordinate = 0;
     public bool isSE = false;
     private Vector2 startPos;
     public List<BlockController> blockControllerList = new List<BlockController>();
+    public static GameDirector gameDirector;
+    private DataHolder dataHolder;
 
     private bool[,] isFieldActive = new bool[,]
     {
@@ -35,6 +36,7 @@ public class GameDirector : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        dataHolder = GameObject.Find("DataHolder").GetComponent<DataHolder>();
         Application.targetFrameRate = 60;
 
         //開始時のブロック二つを生成
@@ -74,11 +76,11 @@ public class GameDirector : MonoBehaviour
         float xPosi = 0;
         float yPosi = 0;
 
-        gameTime += Time.deltaTime;
+        dataHolder.time += Time.deltaTime;
         actionTime += Time.deltaTime;
 
 
-        timeText.text = gameTime.ToString("F1") + "[s]";
+        timeText.text = dataHolder.time.ToString("F1") + "[s]";
 
         Debug.Log(actionTime);
         if (Input.GetMouseButtonDown(0))
@@ -116,7 +118,10 @@ public class GameDirector : MonoBehaviour
             }
             
         }
-
+        //if ()
+        //{
+        //    SceneManager.LoadScene("ClearScene");
+        //}
     }
 
     private void RefleshFieldActiveList()
@@ -195,8 +200,8 @@ public class GameDirector : MonoBehaviour
                             blockControllerList.Remove(bc);
                             checkBc.ChangeNextBlockNumber();
                             count++;
-                            gameScore += 2;
-                            scoreText.text = gameScore.ToString();
+                            dataHolder.score += 2;
+                            scoreText.text = dataHolder.score.ToString();
                         }
                     }
 
@@ -260,8 +265,8 @@ public class GameDirector : MonoBehaviour
                             blockControllerList.Remove(bc);
                             checkBc.ChangeNextBlockNumber();
                             count++;
-                            gameScore += 2;
-                            scoreText.text = gameScore.ToString();
+                            dataHolder.score += 2;
+                            scoreText.text = dataHolder.score.ToString();
                         }
                     }
 
@@ -325,8 +330,8 @@ public class GameDirector : MonoBehaviour
                             blockControllerList.Remove(bc);
                             checkBc.ChangeNextBlockNumber();
                             count++;
-                            gameScore += 2;
-                            scoreText.text = gameScore.ToString();
+                            dataHolder.score += 2;
+                            scoreText.text = dataHolder.score.ToString();
                         }
                     }
 
@@ -390,8 +395,8 @@ public class GameDirector : MonoBehaviour
                             blockControllerList.Remove(bc);
                             checkBc.ChangeNextBlockNumber();
                             count++;
-                            gameScore += 2;
-                            scoreText.text = gameScore.ToString();
+                            dataHolder.score += 2;
+                            scoreText.text = dataHolder.score.ToString();
                         }
                     }
 
@@ -501,5 +506,15 @@ public class GameDirector : MonoBehaviour
                 }
             }
         }
+    }
+    
+    public void SceneSwitching()
+    {
+        SceneManager.LoadScene("ClearScene");
+    }
+
+    public int GetScore()
+    {
+        return dataHolder.score;
     }
 }

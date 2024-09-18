@@ -9,6 +9,6 @@ public class ToGameSceneButton2 : MonoBehaviour
     
     public void OnClicToGameSceneButton()
     {
-        SceneManager.LoadScene("PlayScene");
+        SceneManager.LoadScene("GameScene");
     }
 }

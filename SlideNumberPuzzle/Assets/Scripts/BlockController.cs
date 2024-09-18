@@ -25,6 +25,11 @@ public class BlockController : MonoBehaviour
     {
         number++;
         spriteRenderer.sprite = numberSpriteArray[number];
+
+        if (number == 11)
+        {
+            gameDirector.SceneSwitching();
+        }
     }
 
     //¶‚ÉˆÚ“®
