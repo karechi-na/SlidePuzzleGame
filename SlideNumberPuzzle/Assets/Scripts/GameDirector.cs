@@ -14,6 +14,7 @@ public class GameDirector : MonoBehaviour
     private int count = 0;
     public int xCoordinate = 0;
     public int yCoordinate = 0;
+    float actionTime = 0;
     private Vector2 startPos;
     public List<BlockController> blockControllerList = new List<BlockController>();
 
@@ -67,6 +68,8 @@ public class GameDirector : MonoBehaviour
         float xPosi = 0;
         float yPosi = 0;
 
+        actionTime += Time.deltaTime;
+        Debug.Log(actionTime);
         if (Input.GetMouseButtonDown(0))
         {
             this.startPos = Input.mousePosition;
@@ -76,29 +79,33 @@ public class GameDirector : MonoBehaviour
             Vector2 endPos = Input.mousePosition;
             xPosi = Mathf.Abs(endPos.x - this.startPos.x);
             yPosi = Mathf.Abs(endPos.y - this.startPos.y);
-            //マウスの移動した方向にブロックを動かす。
-            if (yPosi < xPosi && endPos.x - this.startPos.x < 0)
+            if(actionTime >= 0.5f)
             {
-                MoveLeft();
+                //マウスの移動した方向にブロックを動かす。
+                if (yPosi < xPosi && endPos.x - this.startPos.x < 0)
+                {
+                    MoveLeft();
+                    actionTime = 0;
+                }
+                else if (yPosi < xPosi && endPos.x - this.startPos.x > 0)
+                {
+                    MoveRight();
+                    actionTime = 0;
+                }
+                else if (xPosi < yPosi && endPos.y - this.startPos.y < 0)
+                {
+                    MoveDown();
+                    actionTime = 0;
+                }
+                else if (xPosi < yPosi && endPos.y - this.startPos.y > 0)
+                {
+                    MoveUp();
+                    actionTime = 0;
+                }
             }
-            else if (yPosi < xPosi && endPos.x - this.startPos.x > 0)
-            {
-                MoveRight();
-            }
-            else if (xPosi < yPosi && endPos.y - this.startPos.y < 0)
-            {
-                MoveDown();
-            }
-            else if (xPosi < yPosi && endPos.y - this.startPos.y > 0)
-            {
-                MoveUp();
-            }
+            
         }
 
-        if (Input.GetKeyDown(KeyCode.Space))  // スペースキーを押すとチェック
-        {
-            CheckAndMergeBlocks();
-        }
     }
 
     private void RefleshFieldActiveList()
