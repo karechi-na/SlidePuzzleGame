@@ -8,7 +8,8 @@ using TMPro;
 public class GameDirector : MonoBehaviour
 {
     [SerializeField] private GameObject SquareNo2;
-    private TextMeshProUGUI scoreText;
+    [SerializeField] private TextMeshProUGUI scoreText;
+    [SerializeField] private TextMeshProUGUI timeText;
     //private BlockController blockUnion;
     //private BlockGenerator generator;
     private int keepX = 0;
@@ -74,7 +75,7 @@ public class GameDirector : MonoBehaviour
         actionTime += Time.deltaTime;
 
 
-        scoreText.text = actionTime.ToString();
+        timeText.text = actionTime.ToString("F1") + "[s]";
 
         Debug.Log(actionTime);
         if (Input.GetMouseButtonDown(0))
