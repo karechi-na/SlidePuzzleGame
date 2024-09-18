@@ -15,6 +15,8 @@ public class GameDirector : MonoBehaviour
     private int keepX = 0;
     private int keepY = 0;
     private int count = 0;
+    private int gameScore = 0;
+    private float gameTime = 0;
     private float actionTime = 0;
     public int xCoordinate = 0;
     public int yCoordinate = 0;
@@ -72,10 +74,11 @@ public class GameDirector : MonoBehaviour
         float xPosi = 0;
         float yPosi = 0;
 
+        gameTime += Time.deltaTime;
         actionTime += Time.deltaTime;
 
 
-        timeText.text = actionTime.ToString("F1") + "[s]";
+        timeText.text = gameTime.ToString("F1") + "[s]";
 
         Debug.Log(actionTime);
         if (Input.GetMouseButtonDown(0))
@@ -192,6 +195,8 @@ public class GameDirector : MonoBehaviour
                             blockControllerList.Remove(bc);
                             checkBc.ChangeNextBlockNumber();
                             count++;
+                            gameScore += 2;
+                            scoreText.text = gameScore.ToString();
                         }
                     }
 
@@ -255,6 +260,8 @@ public class GameDirector : MonoBehaviour
                             blockControllerList.Remove(bc);
                             checkBc.ChangeNextBlockNumber();
                             count++;
+                            gameScore += 2;
+                            scoreText.text = gameScore.ToString();
                         }
                     }
 
@@ -318,6 +325,8 @@ public class GameDirector : MonoBehaviour
                             blockControllerList.Remove(bc);
                             checkBc.ChangeNextBlockNumber();
                             count++;
+                            gameScore += 2;
+                            scoreText.text = gameScore.ToString();
                         }
                     }
 
@@ -381,6 +390,8 @@ public class GameDirector : MonoBehaviour
                             blockControllerList.Remove(bc);
                             checkBc.ChangeNextBlockNumber();
                             count++;
+                            gameScore += 2;
+                            scoreText.text = gameScore.ToString();
                         }
                     }
 
