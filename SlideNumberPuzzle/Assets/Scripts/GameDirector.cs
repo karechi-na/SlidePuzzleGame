@@ -2,19 +2,22 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using TMPro;
 //using UnityEngine.UI;
 
 public class GameDirector : MonoBehaviour
 {
     [SerializeField] private GameObject SquareNo2;
+    private TextMeshProUGUI scoreText;
     //private BlockController blockUnion;
     //private BlockGenerator generator;
     private int keepX = 0;
     private int keepY = 0;
     private int count = 0;
+    private float actionTime = 0;
     public int xCoordinate = 0;
     public int yCoordinate = 0;
-    float actionTime = 0;
+    public bool isSE = false;
     private Vector2 startPos;
     public List<BlockController> blockControllerList = new List<BlockController>();
 
@@ -69,6 +72,10 @@ public class GameDirector : MonoBehaviour
         float yPosi = 0;
 
         actionTime += Time.deltaTime;
+
+
+        scoreText.text = actionTime.ToString();
+
         Debug.Log(actionTime);
         if (Input.GetMouseButtonDown(0))
         {
@@ -478,6 +485,7 @@ public class GameDirector : MonoBehaviour
                     blockA.MergeBlock(blockB);
                     blockControllerList.Remove(blockB);
                     Destroy(blockB.gameObject);
+                    isSE = true;
                 }
             }
         }
