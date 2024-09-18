@@ -517,4 +517,11 @@ public class GameDirector : MonoBehaviour
     {
         return dataHolder.score;
     }
+
+    public float ReturnTime()
+    {
+        dataHolder.time = 0; 
+        
+        return dataHolder.time;
+    }
 }

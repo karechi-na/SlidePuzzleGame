@@ -11,7 +11,7 @@ public class ClearSceneManager : MonoBehaviour
     void Start()
     {
         DataHolder holder = GameObject.Find("DataHolder").GetComponent<DataHolder>();
-        gameTime.text = holder.time.ToString();
+        gameTime.text = holder.time.ToString("F1") + "[S]";
         gameScore.text = holder.score.ToString();
     }
 
