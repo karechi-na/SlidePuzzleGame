@@ -6,6 +6,7 @@ TagManager:
   tags:
   - square2
   - square4
+  - DataHolder
   layers:
   - Default
   - TransparentFX

@@ -40,6 +40,7 @@ public class GameDirector : MonoBehaviour
         Application.targetFrameRate = 60;
 
         dataHolder.time = 0;
+        dataHolder.score = 0;
 
         //開始時のブロック二つを生成
         for (; ; )
@@ -169,7 +170,7 @@ public class GameDirector : MonoBehaviour
     {
         RefleshFieldActiveList();
         bool isMoveBlock = false;
-        for (int x = 2; x >= 0; x--)
+        for (int x = 3; x >= 0; x--)
         {
             for (int y = 0; y < 4; y++)
             {
@@ -234,7 +235,7 @@ public class GameDirector : MonoBehaviour
     {
         RefleshFieldActiveList();
         bool isMoveBlock = false;
-        for (int x = 1; x < 4; x++)
+        for (int x = 0; x < 4; x++)
         {
             for (int y = 0; y < 4; y++)
             {
@@ -299,7 +300,7 @@ public class GameDirector : MonoBehaviour
     {
         RefleshFieldActiveList();
         bool isMoveBlock = false;
-        for (var y = 2; y >= 0; y--)
+        for (var y = 3; y >= 0; y--)
         {
             for (var x = 0; x < 4; x++)
             {
@@ -364,7 +365,7 @@ public class GameDirector : MonoBehaviour
     {
         RefleshFieldActiveList();
         bool isMoveBlock = false;
-        for (var y = 1; y < 4; y++)
+        for (var y = 0; y < 4; y++)
         {
             for (var x = 0; x < 4; x++)
             {
