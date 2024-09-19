@@ -39,6 +39,8 @@ public class GameDirector : MonoBehaviour
         dataHolder = GameObject.Find("DataHolder").GetComponent<DataHolder>();
         Application.targetFrameRate = 60;
 
+        dataHolder.time = 0;
+
         //開始時のブロック二つを生成
         for (; ; )
         {
