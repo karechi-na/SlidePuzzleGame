@@ -8,5 +8,6 @@ public class ToStartSceneButton : MonoBehaviour
     public void OnClicToStartSceneButton()
     {
         SceneManager.LoadScene("StartScene");
+        Debug.Log("Ø‚è‘Ö‚¦");
     }
 }
