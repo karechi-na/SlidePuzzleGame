@@ -84,7 +84,6 @@ public class GameDirector : MonoBehaviour
 
         timeText.text = dataHolder.time.ToString("F1") + "[s]";
 
-        Debug.Log(actionTime);
         if (Input.GetMouseButtonDown(0))
         {
             this.startPos = Input.mousePosition;
