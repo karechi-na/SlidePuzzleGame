@@ -8,15 +8,15 @@ public class DataHolder : MonoBehaviour
     public int score = 0;
 
 
-    public void Awake()
-    {
-        time = 0.0f;
-        score = 0;
-
-    }
 
     private void Start()
     {
+        GameObject[] objects = GameObject.FindGameObjectsWithTag("DataHolder");
+
+        if(objects.Length > 1)
+        {
+            Destroy(gameObject);
+        }
         DontDestroyOnLoad(gameObject);
     }
 }
