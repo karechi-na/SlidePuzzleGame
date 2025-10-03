@@ -1,105 +1,100 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using DG.Tweening;
 
 public class BlockController : MonoBehaviour
 {
-    [Header("イメージの配列(０から順に２～２０４８までいれる)")]
+    [Header("イメージの配列(0から順に2～2048までいれる)")]
     [SerializeField] private Sprite[] numberSpriteArray = null;
+
+    [Header("")]
     [SerializeField] private SpriteRenderer spriteRenderer = null;
-    private Vector2 startPos;
+
+    [Header("")]
     public bool isTransform = false;
-    private GameDirector gameDirector;
+
+    //
+    private GameDirector gameDirector = null;
+
+    [Header("")]
     public Vector2 gridPosition = Vector2.zero;
-    public int number { private set; get; } = 0;
+
+    [Header("")]
+    public int number { get; private set; } = 0;
+
+    [Header("")]
     public bool isMerge = false;
 
     void Start()
     {
+        //
         spriteRenderer.sprite = numberSpriteArray[number];
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public void ChangeNextBlockNumber()
     {
         number++;
         spriteRenderer.sprite = numberSpriteArray[number];
 
+        //
         if (number == 11)
         {
             gameDirector.SceneSwitching();
         }
     }
 
-    //左に移動
-    public Tween transformLeft(int moveGridCount)
+    /// <summary>
+    /// moveGridCountの値分左右に移動
+    /// 値が正なら右、負なら左
+    /// </summary>
+    public Tween BlockTransformHorizontal(int moveGridCount)
     {
-        return this.transform.DOMove(new Vector3(transform.position.x - (2.0f * moveGridCount), transform.position.y, 0), 0.5f)
-                        .OnComplete(() =>
-                        {
-                            if (isMerge)
-                            {
-                                Destroy(gameObject);
-                            }
-                            else
-                            {
-                                gridPosition.x -= moveGridCount;
-                            }
-                        });
+        return this.transform.DOMove(new Vector3(transform.position.x + (2.0f * moveGridCount),
+                                                 transform.position.y,
+                                                 0.0f),
+                                                 0.5f)
+                             .OnComplete(() =>
+                             {
+                                 if (isMerge)
+                                 {
+                                     Destroy(gameObject);
+                                 }
+                                 else
+                                 {
+
+                                     gridPosition.x += moveGridCount;
+                                 }
+                             });
     }
 
-    //右に移動
-    public Tween transformRight(int moveGridCount)
+    /// <summary>
+    /// moveGridCountの値分上下に移動
+    /// 値が正なら上、負なら下
+    /// </summary>
+    public Tween BlockTransformVertical(int moveGridCount)
     {
-        return this.transform.DOMove(new Vector3(transform.position.x + (2.0f * moveGridCount), transform.position.y, 0), 0.5f)
-                    .OnComplete(() =>
-                    {
-                        if (isMerge)
-                        {
-                            Destroy(gameObject);
-                        }
-                        else
-                        {
-                            gridPosition.x += moveGridCount;
-                        }
-                    });
+        return this.transform.DOMove(new Vector3(transform.position.x,
+                                                 transform.position.y + (2.0f * moveGridCount),
+                                                 0.0f),
+                                                 0.5f)
+                             .OnComplete(() =>
+                             {
+                                 if (isMerge)
+                                 {
+                                     Destroy(gameObject);
+                                 }
+                                 else
+                                 {
+                                     gridPosition.y += moveGridCount;
+                                 }
+                             });
     }
 
-    //下に移動
-    public Tween transformDown(int moveGridCount)
-    {
-        return this.transform.DOMove(new Vector3(transform.position.x, transform.position.y - (2.0f * moveGridCount), 0), 0.5f)
-            .OnComplete(() =>
-            {
-                if (isMerge)
-                {
-                    Destroy(gameObject);
-                }
-                else
-                {
-                    gridPosition.y += moveGridCount;
-                }
-            });
-    }
-
-    //上に移動
-    public Tween transformUp(int moveGridCount)
-    {
-        return this.transform.DOMove(new Vector3(transform.position.x, transform.position.y + (2.0f * moveGridCount), 0), 0.5f)
-                        .OnComplete(() =>
-                        {
-                            if (isMerge)
-                            {
-                                Destroy(gameObject);
-                            }
-                            else
-                            {
-                                gridPosition.y -= moveGridCount;
-                            }
-                        });
-    }
-
+    /// <summary>
+    /// 
+    /// </summary>
     public void MergeBlock(BlockController otherBlock)
     {
         this.number *= 2;
@@ -107,6 +102,9 @@ public class BlockController : MonoBehaviour
         UpdateSprite();
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     private void UpdateSprite()
     {
         int index = (int)Mathf.Log(number, 2) - 1;

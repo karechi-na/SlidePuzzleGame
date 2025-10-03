@@ -1,12 +1,16 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class ToClearSceneButton : MonoBehaviour
 {
+    [Header("SceneReference")]
+    [SerializeField] private SceneReference sceneReference = null;
+
+    /// <summary>
+    /// ボタンが押されたらクリアシーンへ
+    /// </summary>
     public void OnClicToGameSceneButton()
     {
-        SceneManager.LoadScene("ClearScene");
+        SceneManager.LoadScene(sceneReference.EndSceneName);
     }
 }

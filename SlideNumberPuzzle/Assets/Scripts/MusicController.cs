@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class MusicController : MonoBehaviour
@@ -15,7 +13,7 @@ public class MusicController : MonoBehaviour
 
     void Update()
     {
-
+        //マウスの左ボタンを離したとき
         if (Input.GetMouseButtonUp(0))
         {
             //音(sound1)を鳴らす

@@ -1,12 +1,15 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
 public class ClearSceneManager : MonoBehaviour
 {
+    [Header("")]
     [SerializeField] private TMP_Text gameTime;
+
+    [Header("")]
     [SerializeField] private TMP_Text gameScore;
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -15,9 +18,4 @@ public class ClearSceneManager : MonoBehaviour
         gameScore.text = holder.score.ToString();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }

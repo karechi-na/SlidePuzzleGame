@@ -1,28 +1,44 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using DG.Tweening;
 using TMPro;
 using UnityEngine.SceneManagement;
-//using UnityEngine.UI;
 
 public class GameDirector : MonoBehaviour
 {
-    [SerializeField] private GameObject SquareNo2;
-    [SerializeField] private TextMeshProUGUI scoreText;
-    [SerializeField] private TextMeshProUGUI timeText;
-    //private BlockController blockUnion;
-    //private BlockGenerator generator;
+    [Header("生成するブロックのプレハブ")]
+    [SerializeField] private GameObject SquareNo2 = null;
+
+    [Header("スコアのテキスト")]
+    [SerializeField] private TextMeshProUGUI scoreText = null;
+
+    [Header("タイムのテキスト")]
+    [SerializeField] private TextMeshProUGUI timeText = null;
+
+    //
     private int keepX = 0;
     private int keepY = 0;
+
+    //
     private int count = 0;
+
+    //
     private float actionTime = 0;
+
+    [Header("")]
     public int xCoordinate = 0;
     public int yCoordinate = 0;
+
+    [Header("")]
     public bool isSE = false;
-    private Vector2 startPos;
+
+    //
+    private Vector2 startPos = Vector2.zero;
+
+    [Header("")]
     public List<BlockController> blockControllerList = new List<BlockController>();
-    public static GameDirector gameDirector;
+
+    [Header("")]
+    public static GameDirector gameDirector = null;
     private DataHolder dataHolder;
 
     private bool[,] isFieldActive = new bool[,]
@@ -212,7 +228,7 @@ public class GameDirector : MonoBehaviour
 
                 if (count > 0)
                 {
-                    bc.transformRight(count);
+                    bc.BlockTransformHorizontal(count);
                     isMoveBlock = true;
                 }
                 else
@@ -277,7 +293,7 @@ public class GameDirector : MonoBehaviour
 
                 if (count > 0)
                 {
-                    bc.transformLeft(count);
+                    bc.BlockTransformHorizontal(-count);
                     isMoveBlock = true;
                 }
                 else
@@ -342,7 +358,7 @@ public class GameDirector : MonoBehaviour
 
                 if (count > 0)
                 {
-                    bc.transformDown(count);
+                    bc.BlockTransformVertical(-count);
                     isMoveBlock = true;
                 }
                 else
@@ -407,7 +423,7 @@ public class GameDirector : MonoBehaviour
 
                 if (count > 0)
                 {
-                    bc.transformUp(count);
+                    bc.BlockTransformVertical(count);
                     isMoveBlock = true;
                 }
                 else
@@ -487,28 +503,6 @@ public class GameDirector : MonoBehaviour
         return yCoordinate;
     }
 
-    private void CheckAndMergeBlocks()
-    {
-        Debug.Log("OK!");
-
-        for (int i = 0; i < blockControllerList.Count; i++)
-        {
-            for (int j = i + 1; j < blockControllerList.Count; j++)
-            {
-                BlockController blockA = blockControllerList[i];
-                BlockController blockB = blockControllerList[j];
-
-                //同じ位置にあり、おなじ数字なら合体
-                if (blockA.gridPosition == blockB.gridPosition && blockA.number == blockB.number)
-                {
-                    blockA.MergeBlock(blockB);
-                    blockControllerList.Remove(blockB);
-                    Destroy(blockB.gameObject);
-                    isSE = true;
-                }
-            }
-        }
-    }
     
     public void SceneSwitching()
     {
