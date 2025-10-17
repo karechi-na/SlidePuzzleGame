@@ -3,6 +3,7 @@ using UnityEngine;
 public class DataHolder : MonoBehaviour
 {
     public float time = 0.0f;
+
     public int score = 0;
 
 

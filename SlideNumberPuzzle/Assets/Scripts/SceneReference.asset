@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: SceneReference
   m_EditorClassIdentifier: 
   mainSceneName: GameScene
-  endSceneName: 
-  titleSceneName: 
+  endSceneName: ClearScene
+  titleSceneName: StartScene

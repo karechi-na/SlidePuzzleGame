@@ -1,9 +1,15 @@
 using UnityEngine;
 
+/// <summary>
+/// BGM‚ğŠÇ—‚·‚éƒNƒ‰ƒX
+/// </summary>
 public class MusicController : MonoBehaviour
 {
-    public AudioClip sound1;
-    AudioSource audioSource;
+    [Header("–Â‚ç‚·‰¹")]
+    [SerializeField] private AudioClip sound1;
+
+    //AudioSource‚Ìî•ñ
+    private AudioSource audioSource;
 
     void Start()
     {
