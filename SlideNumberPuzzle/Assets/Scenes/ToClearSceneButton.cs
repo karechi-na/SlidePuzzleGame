@@ -1,10 +1,15 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+/// <summary>
+/// 画面のUIButtonを押したときSceneを切り替える処理
+/// </summary>
 public class ToClearSceneButton : MonoBehaviour
 {
-    public void OnClicToGameSceneButton()//ボタンを押したときSceneを切り替える
+    //ボタンを押したときSceneを切り替える
+    public void OnClicToGameSceneButton()
     {
-        SceneManager.LoadScene("ClearScene");//SceneをClearSceneに切り替える
+        //SceneをClearSceneに切り替える
+        SceneManager.LoadScene("ClearScene");
     }
 }
