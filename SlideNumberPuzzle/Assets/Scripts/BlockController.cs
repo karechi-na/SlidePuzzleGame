@@ -1,24 +1,25 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using DG.Tweening;
 
 public class BlockController : MonoBehaviour
 {
-    [Header("ƒCƒ[ƒW‚Ì”z—ñ(‚O‚©‚ç‡‚É‚Q`‚Q‚O‚S‚W‚Ü‚Å‚¢‚ê‚é)")]
+    [Header("ƒCƒ[ƒW‚Ì”z—ñ(0‚©‚ç‡‚É2`2048‚Ü‚Å‚¢‚ê‚é)")]
     [SerializeField] private Sprite[] numberSpriteArray = null;
     [SerializeField] private SpriteRenderer spriteRenderer = null;
+
+    public Vector2 gridPosition = Vector2.zero;
+    public int number { private set; get; } = 0;
+
+    public bool isMerge = false;
+
     private Vector2 startPos;
     public bool isTransform = false;
     private GameDirector gameDirector;
-    public Vector2 gridPosition = Vector2.zero;
-    public int number { private set; get; } = 0;
-    public bool isMerge = false;
 
     void Start()
     {
         spriteRenderer.sprite = numberSpriteArray[number];
+        //UpdateSprite();
     }
 
     public void ChangeNextBlockNumber()
@@ -30,74 +31,64 @@ public class BlockController : MonoBehaviour
         {
             gameDirector.SceneSwitching();
         }
+
+        //UpdateSprite();
     }
+
+    //------------------------------
+    // ƒuƒƒbƒN‚ÌˆÚ“®
+    //------------------------------
 
     //¶‚ÉˆÚ“®
     public Tween transformLeft(int moveGridCount)
     {
-        return this.transform.DOMove(new Vector3(transform.position.x - (2.0f * moveGridCount), transform.position.y, 0), 0.5f)
-                        .OnComplete(() =>
+        return this.transform.DOMove(
+            new Vector3(transform.position.x - (2.0f * moveGridCount), transform.position.y, 0)
+            , 0.25f
+            ).OnComplete(() =>
                         {
                             if (isMerge)
-                            {
                                 Destroy(gameObject);
-                            }
-                            else
-                            {
-                                gridPosition.x -= moveGridCount;
-                            }
                         });
     }
 
     //‰E‚ÉˆÚ“®
     public Tween transformRight(int moveGridCount)
     {
-        return this.transform.DOMove(new Vector3(transform.position.x + (2.0f * moveGridCount), transform.position.y, 0), 0.5f)
-                    .OnComplete(() =>
-                    {
-                        if (isMerge)
-                        {
-                            Destroy(gameObject);
-                        }
-                        else
-                        {
-                            gridPosition.x += moveGridCount;
-                        }
-                    });
+        return this.transform.DOMove(
+            new Vector3(transform.position.x + (2.0f * moveGridCount), transform.position.y, 0)
+            , 0.25f
+            ).OnComplete(() =>
+            {
+                if (isMerge)
+                    Destroy(gameObject);
+            });
     }
 
     //‰º‚ÉˆÚ“®
     public Tween transformDown(int moveGridCount)
     {
-        return this.transform.DOMove(new Vector3(transform.position.x, transform.position.y - (2.0f * moveGridCount), 0), 0.5f)
-            .OnComplete(() =>
+        return this.transform.DOMove(
+            new Vector3(transform.position.x, transform.position.y - (2.0f * moveGridCount), 0)
+            , 0.25f
+            ).OnComplete(() =>
             {
                 if (isMerge)
-                {
                     Destroy(gameObject);
-                }
-                else
-                {
-                    gridPosition.y += moveGridCount;
-                }
             });
     }
 
     //ã‚ÉˆÚ“®
     public Tween transformUp(int moveGridCount)
     {
-        return this.transform.DOMove(new Vector3(transform.position.x, transform.position.y + (2.0f * moveGridCount), 0), 0.5f)
-                        .OnComplete(() =>
-                        {
-                            if (isMerge)
-                            {
-                                Destroy(gameObject);
-                            }
-                            else
-                            {
-                                gridPosition.y -= moveGridCount;
-                            }
-                        });
+        return this.transform.DOMove(
+            new Vector3(transform.position.x, transform.position.y + (2.0f * moveGridCount), 0)
+            , 0.25f
+            ).OnComplete(() =>
+            {
+                if (isMerge)
+                    Destroy(gameObject);
+            });
     }
 
     public void MergeBlock(BlockController otherBlock)

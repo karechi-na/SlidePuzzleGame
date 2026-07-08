@@ -2,22 +2,25 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DataHolder : MonoBehaviour
+public class DataHolder : SingletonMonobehaviour<DataHolder>
 {
     public float time = 0.0f;
     public int score = 0;
 
-
-
-    private void Start()
+    protected override void Awake()
     {
-        GameObject[] objects = GameObject.FindGameObjectsWithTag("DataHolder");
-
-        if(objects.Length > 1)
-        {
-            Destroy(gameObject);
-        }
+        base.Awake();
         DontDestroyOnLoad(gameObject);
+    }
+
+
+    /// <summary>
+    /// ‰Šú‰»ƒƒ\ƒbƒh
+    /// </summary>
+    public void DataInitialization()
+    {
+        time = 0.0f;
+        score = 0;
     }
 }
 
