@@ -1,3 +1,7 @@
+//==========================================================================================================
+// 製作者 : スズキ チヒロ
+//==========================================================================================================
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,21 +12,34 @@ using UnityEngine.SceneManagement;
 
 public class GameDirector : MonoBehaviour
 {
+    [Header("ゲーム開始時に生成するブロックのプレハブ")]
     [SerializeField] private GameObject SquareNo2;
+    // スコアと時間のテキスト
     [SerializeField] private TextMeshProUGUI scoreText;
     [SerializeField] private TextMeshProUGUI timeText;
+
     //private BlockController blockUnion;
     //private BlockGenerator generator;
+
+
     private int keepX = 0;
     private int keepY = 0;
+
     private int count = 0;
+
     private float actionTime = 0;
+
     public int xCoordinate = 0;
     public int yCoordinate = 0;
+
     public bool isSE = false;
+
     private Vector2 startPos;
+
     public List<BlockController> blockControllerList = new List<BlockController>();
+
     public static GameDirector gameDirector;
+
     private DataHolder dataHolder;
 
     private bool[,] isFieldActive = new bool[,]
@@ -33,142 +50,307 @@ public class GameDirector : MonoBehaviour
         { false, false, false, false },
     };
 
-    // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
-        dataHolder = GameObject.Find("DataHolder").GetComponent<DataHolder>();
-        Application.targetFrameRate = 60;
+        SetFrameRate();
 
-        dataHolder.time = 0;
-        dataHolder.score = 0;
+        InitializeData();
 
-        //開始時のブロック二つを生成
-        for (; ; )
-        {
-            xCoordinate = Random.Range(0, 8);
-            yCoordinate = Random.Range(0, 8);
+        SpawnInitialBlocks();
+        ////開始時のブロック二つを生成
+        //for (; ; )
+        //{
+        //    //ランダムに座標を生成
+        //    xCoordinate = Random.Range(0, 8);
+        //    yCoordinate = Random.Range(0, 8);
 
-            //生成用の変数
-            int vertical = yCoordinate * -1;
-            int horizontal = xCoordinate;
+        //    //生成用の変数
+        //    int vertical = yCoordinate * -1;
+        //    int horizontal = xCoordinate;
 
-            CompareDirectionX(xCoordinate);
-            CompareDirectionY(yCoordinate);
+        //    CompareDirectionX(xCoordinate);
+        //    CompareDirectionY(yCoordinate);
 
-            if (keepX != horizontal && keepY != vertical && horizontal % 2 != 0 && vertical % 2 != 0)
-            {
-                GameObject square = Instantiate(SquareNo2);
-                square.transform.position = new Vector3(horizontal, vertical, 0);
-                BlockController bc = square.GetComponent<BlockController>();
-                bc.gridPosition = new Vector2(Mathf.Abs(Mathf.Floor(xCoordinate / 2.0f)), Mathf.Floor(yCoordinate / 2.0f));
-                blockControllerList.Add(bc);
+        //    if (keepX != horizontal && keepY != vertical && horizontal % 2 != 0 && vertical % 2 != 0)
+        //    {
+        //        GameObject square = Instantiate(SquareNo2);
+        //        square.transform.position = new Vector3(horizontal, vertical, 0);
+        //        BlockController bc = square.GetComponent<BlockController>();
+        //        bc.gridPosition = new Vector2(Mathf.Abs(Mathf.Floor(xCoordinate / 2.0f)), Mathf.Floor(yCoordinate / 2.0f));
+        //        blockControllerList.Add(bc);
 
-                keepX = horizontal;
-                keepY = vertical;
-                count++;
-            }
-            if (count == 2)
-            {
-                break;
-            }
-        }
+        //        keepX = horizontal;
+        //        keepY = vertical;
+        //        count++;
+        //    }
+        //    if (count == 2)
+        //    {
+        //        break;
+        //    }
+        //}
     }
-
     private void Update()
     {
         float xPosi = 0;
         float yPosi = 0;
 
-        dataHolder.time += Time.deltaTime;
-        actionTime += Time.deltaTime;
+        UpdateTime();
 
+        HandleInput();
 
-        timeText.text = dataHolder.time.ToString("F1") + "[s]";
-
-        if (Input.GetMouseButtonDown(0))
-        {
-            this.startPos = Input.mousePosition;
-        }
-        else if (Input.GetMouseButtonUp(0))
-        {
-            Vector2 endPos = Input.mousePosition;
-            xPosi = Mathf.Abs(endPos.x - this.startPos.x);
-            yPosi = Mathf.Abs(endPos.y - this.startPos.y);
-            if(actionTime >= 0.5f)
-            {
-                //マウスの移動した方向にブロックを動かす。
-                if (yPosi < xPosi && endPos.x - this.startPos.x < 0)
-                {
-                    MoveLeft();
-                    actionTime = 0;
-                }
-                else if (yPosi < xPosi && endPos.x - this.startPos.x > 0)
-                {
-                    MoveRight();
-                    actionTime = 0;
-                }
-                else if (xPosi < yPosi && endPos.y - this.startPos.y < 0)
-                {
-                    MoveDown();
-                    actionTime = 0;
-                }
-                else if (xPosi < yPosi && endPos.y - this.startPos.y > 0)
-                {
-                    MoveUp();
-                    actionTime = 0;
-                }
-            }
-            
-        }
-        //if ()
+        //if (Input.GetMouseButtonDown(0))
         //{
-        //    SceneManager.LoadScene("ClearScene");
+        //    this.startPos = Input.mousePosition;
         //}
+        //else if (Input.GetMouseButtonUp(0))
+        //{
+        //    Vector2 endPos = Input.mousePosition;
+        //    xPosi = Mathf.Abs(endPos.x - this.startPos.x);
+        //    yPosi = Mathf.Abs(endPos.y - this.startPos.y);
+        //    if (actionTime >= 0.5f)
+        //    {
+        //        //マウスの移動した方向にブロックを動かす。
+        //        if (yPosi < xPosi && endPos.x - this.startPos.x < 0)
+        //        {
+        //            MoveLeft();
+        //            actionTime = 0;
+        //        }
+        //        else if (yPosi < xPosi && endPos.x - this.startPos.x > 0)
+        //        {
+        //            MoveRight();
+        //            actionTime = 0;
+        //        }
+        //        else if (xPosi < yPosi && endPos.y - this.startPos.y < 0)
+        //        {
+        //            MoveDown();
+        //            actionTime = 0;
+        //        }
+        //        else if (xPosi < yPosi && endPos.y - this.startPos.y > 0)
+        //        {
+        //            MoveUp();
+        //            actionTime = 0;
+        //        }
+        //    }
+
+        //}
+        ////if ()
+        ////{
+        ////    SceneManager.LoadScene("ClearScene");
+        ////}
     }
 
-    private void RefleshFieldActiveList()
+    #region 初期化関連
+    /// <summary>
+    /// フレームレートの設定メソッド
+    /// </summary>
+    private void SetFrameRate()
     {
-        for (var x = 0; x < 4; x++)
+        // フレームレートの設定
+        Application.targetFrameRate = 60;
+    }
+
+    /// <summary>
+    /// DataHolderの初期化メソッド
+    /// </summary>
+    private void InitializeData()
+    {
+        // DataHolderの取得と初期化
+        DataHolder.Instance.DataInitialization();
+    }
+
+    /// <summary>
+    /// 最初の2つのブロックを生成するメソッド
+    /// </summary>
+    private void SpawnInitialBlocks()
+    {
+        int spwnCount = 0;
+
+        while (spwnCount < 2)
         {
-            for (var y = 0; y < 4; y++)
+            Vector2Int randomPos = GetRandomSpawnPosition();
+
+            if (CanSpawnBlock(randomPos))
+            {
+                CreateBlock(randomPos);
+                spwnCount++;
+            }
+        }
+    }
+
+    /// <summary>
+    /// ランダムな生成位置を取得するメソッド
+    /// </summary>
+    private Vector2Int GetRandomSpawnPosition()
+    {
+        int x = Random.Range(0, 8);
+        int y = Random.Range(0, 8);
+
+        return new Vector2Int(x, y);
+    }
+
+    /// <summary>
+    /// ランダムに生成された位置にブロックを生成できるかを判定するメソッド
+    /// </summary>
+    private bool CanSpawnBlock(Vector2Int pos)
+    {
+        int horizontal = pos.x;
+        int vertical = pos.y * -1;
+
+        if (keepX != horizontal &&
+            keepY != vertical &&
+            horizontal % 2 != 0 &&
+            vertical % 2 != 0)
+        {
+            keepX = horizontal;
+            keepY = vertical;
+            return true;
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    /// ランダムに生成された位置にブロックを生成するメソッド
+    /// </summary>
+    private void CreateBlock(Vector2Int pos)
+    {
+        int horizontal = pos.x;
+        int vertical = pos.y * -1;
+
+        GameObject square = Instantiate(SquareNo2);
+        square.transform.position = new Vector3(horizontal, vertical, 0);
+
+        BlockController bc = square.GetComponent<BlockController>();
+        bc.gridPosition = new Vector2(
+            horizontal / 2.0f,
+            vertical / 2.0f
+            );
+
+        blockControllerList.Add(bc);
+    }
+    #endregion
+
+
+    /// <summary>
+    /// 時間更新処理メソッド
+    /// </summary>
+    private void UpdateTime()
+    {
+        DataHolder.Instance.time += Time.deltaTime;
+        actionTime += Time.deltaTime;
+
+        InGameUIManager.Instance.UpdateTime();
+    }
+
+    /// <summary>
+    /// マウスの入力を処理するメソッド
+    /// </summary>
+    private void HandleInput()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            startPos = Input.mousePosition;
+        }
+        if (Input.GetMouseButtonUp(0))
+        {
+            ProcessSwipe(Input.mousePosition);
+        }
+    }
+
+    /// <summary>
+    /// マウスのスワイプ方向によってブロックを移動させるメソッド
+    /// </summary>
+    private void ProcessSwipe(Vector2 endPos)
+    {
+        if (actionTime < 0.5f) return;
+
+        float x = Mathf.Abs(endPos.x - startPos.x);
+        float y = Mathf.Abs(endPos.y - startPos.y);
+
+        if (y < x)
+        {
+            if (endPos.x < startPos.x)
+                MoveLeft();
+            else
+                MoveRight();
+        }
+        else
+        {
+            if (endPos.y < startPos.y)
+                MoveDown();
+            else
+                MoveUp();
+        }
+    }
+
+    /// <summary>
+    /// fieldの状態をリセットするメソッド
+    /// </summary>
+    private void ResetFieldState()
+    {
+        for (int x = 0; x < 4; x++)
+        {
+            for (int y = 0; y < 4; y++)
             {
                 isFieldActive[x, y] = false;
             }
         }
     }
 
+    /// <summary>
+    /// 新しいブロックを生成するメソッド
+    /// </summary>
     private void CreateNewBlock()
     {
-        var emptyPositionList = new List<Vector2>();
-        for (var x = 0; x < 4; x++)
+        List<Vector2> emptyCells = GetEmptyCells();
+
+        if (emptyCells.Count == 0) return;
+
+        Vector2 pos = emptyCells[Random.Range(0, emptyCells.Count)];
+        SpawnBlockAt(pos);
+    }
+
+    /// <summary>
+    /// 空いているセルのリストを取得するメソッド
+    /// </summary>
+    private List<Vector2> GetEmptyCells()
+    {
+        List<Vector2> list = new List<Vector2>();
+        for (int x = 0; x < 4; x++)
         {
-            for (var y = 0; y < 4; y++)
+            for (int y = 0; y < 4; y++)
             {
                 if (!isFieldActive[x, y])
                 {
-                    emptyPositionList.Add(new Vector2(x, y));
+                    list.Add(new Vector2(x, y));
                 }
             }
         }
 
-        if (emptyPositionList.Count != 0)
-        {
-            var random = Random.Range(0, emptyPositionList.Count);
-            var createPos = emptyPositionList[random];
-
-            GameObject square = Instantiate(SquareNo2);
-            square.transform.position = new Vector3(createPos.x * 2.0f + 1.0f, -createPos.y * 2.0f - 1.0f, 0); ;
-
-            BlockController bc = square.GetComponent<BlockController>();
-            bc.gridPosition = createPos;
-            blockControllerList.Add(bc);
-        }
+        return list;
     }
 
-    //右に移動させるメソッド
+    /// <summary>
+    /// GetEmptyCellsで取得した空いているセルの位置からランダムにブロックを生成するメソッド
+    /// </summary>
+    private void SpawnBlockAt(Vector2 pos)
+    {
+        GameObject square = Instantiate(SquareNo2);
+        square.transform.position =
+            new Vector3(pos.x * 2.0f + 1.0f, -pos.y * 2.0f - 1.0f, 0);
+
+        BlockController bc = square.GetComponent<BlockController>();
+        bc.gridPosition = pos;
+
+        blockControllerList.Add(bc);
+    }
+
+    /// <summary>
+    /// 右に移動させるメソッド
+    /// </summary>
     private void MoveRight()
     {
-        RefleshFieldActiveList();
+        ResetFieldState();
         bool isMoveBlock = false;
         for (int x = 3; x >= 0; x--)
         {
@@ -178,6 +360,7 @@ public class GameDirector : MonoBehaviour
                 var bc = CheckBlockController(gridPos);
                 if (bc == null)
                 {
+                    Debug.Log("Check : " + gridPos);
                     continue;
                 }
 
@@ -191,6 +374,8 @@ public class GameDirector : MonoBehaviour
                     if (checkBc == null ||
                         checkBc.isMerge)
                     {
+                        Debug.Log("MoveRight1");
+
                         count++;
                     }
                     else if (!isNear)
@@ -198,6 +383,7 @@ public class GameDirector : MonoBehaviour
                         isNear = true;
                         if (bc.number == checkBc.number)
                         {
+                            Debug.Log("MoveRight2");
                             bc.isMerge = true;
                             blockControllerList.Remove(bc);
                             checkBc.ChangeNextBlockNumber();
@@ -212,6 +398,7 @@ public class GameDirector : MonoBehaviour
 
                 if (count > 0)
                 {
+                    Debug.Log("MoveRight3");
                     bc.transformRight(count);
                     isMoveBlock = true;
                 }
@@ -230,10 +417,12 @@ public class GameDirector : MonoBehaviour
         CreateNewBlock();
     }
 
-    //左に移動させるメソッド
+    /// <summary>
+    /// 左に移動させるメソッド
+    /// </summary>
     private void MoveLeft()
     {
-        RefleshFieldActiveList();
+        ResetFieldState();
         bool isMoveBlock = false;
         for (int x = 0; x < 4; x++)
         {
@@ -295,10 +484,12 @@ public class GameDirector : MonoBehaviour
         CreateNewBlock();
     }
 
-    //下に移動させるメソッド
+    /// <summary>
+    /// 下に移動させるメソッド
+    /// </summary>
     private void MoveDown()
     {
-        RefleshFieldActiveList();
+        ResetFieldState();
         bool isMoveBlock = false;
         for (var y = 3; y >= 0; y--)
         {
@@ -360,10 +551,12 @@ public class GameDirector : MonoBehaviour
         CreateNewBlock();
     }
 
-    //上に移動させるメソッド
+    /// <summary>
+    /// 上に移動させるメソッド
+    /// </summary>
     private void MoveUp()
     {
-        RefleshFieldActiveList();
+        ResetFieldState();
         bool isMoveBlock = false;
         for (var y = 0; y < 4; y++)
         {
@@ -434,6 +627,7 @@ public class GameDirector : MonoBehaviour
 
         foreach (var blockController in blockControllerList)
         {
+            Debug.Log("CheckBlockController: " + blockController.gridPosition);
             if (blockController.gridPosition == gridPos)
             {
                 result = blockController;
@@ -509,21 +703,22 @@ public class GameDirector : MonoBehaviour
             }
         }
     }
-    
+
     public void SceneSwitching()
     {
         SceneManager.LoadScene("ClearScene");
     }
 
-    public int GetScore()
-    {
-        return dataHolder.score;
-    }
+    //public int GetScore()
+    //{
+    //    return dataHolder.score;
+    //}
 
-    public float ReturnTime()
-    {
-        dataHolder.time = 0; 
-        
-        return dataHolder.time;
-    }
+    //public float ReturnTime()
+    //{
+    //    dataHolder.time = 0; 
+
+    //    return dataHolder.time;
+    //}
+
 }
